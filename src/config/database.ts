@@ -2,6 +2,8 @@ import mongoose from 'mongoose';
 
 const { MONGO_URI } = process.env;
 
+export let dbConnection: mongoose.Connection;
+
 export const connectToDB = () => {
   // Подключаемся к базе
   mongoose
@@ -10,9 +12,11 @@ export const connectToDB = () => {
       // @ts-ignore
       useNewUrlParser: true,
       useUnifiedTopology: true,
+      replicaSet: 'rs',
     })
     .then(() => {
       console.log('К базе подключился, получается');
+      dbConnection = mongoose.connection;
     })
     .catch(error => {
       console.log('Подключение к базе добанулось');
