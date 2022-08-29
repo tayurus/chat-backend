@@ -4,6 +4,7 @@ import { User, UserType } from '@/model/user';
 import { SearchUsersQueryParams } from '@/types/backendParams';
 import { searchByFields } from '@utils/search';
 import { SearchUsersResponse } from '@/types/backendResponses';
+import { normalizeFoundedUser } from '@utils/user';
 
 export const searchUsers = async (req: TypedRequestBody<{}, SearchUsersQueryParams>, res: TypedResponse<SearchUsersResponse>) => {
   const {
@@ -16,7 +17,9 @@ export const searchUsers = async (req: TypedRequestBody<{}, SearchUsersQueryPara
 
   const userFieldsForReturn: Array<keyof UserType | '_id'> = ['first_name', 'last_name', '_id'];
 
-  const searchResults: SearchUsersResponse = await searchByFields<UserType>(User, ['first_name', 'last_name'], searchQuery, userFieldsForReturn);
+  const searchResults: SearchUsersResponse = (
+    await searchByFields<UserType>(User, ['first_name', 'last_name'], searchQuery, userFieldsForReturn)
+  ).map(normalizeFoundedUser);
 
   return res.status(200).send(searchResults);
 };

@@ -5,7 +5,7 @@ export async function searchByFields<T>(
   fieldsName: Array<keyof T>,
   query: string,
   fieldsInResult: Array<keyof T | '_id'>,
-) {
+): Promise<Array<Mongoose.Document<Mongoose.Types.ObjectId, any, T> & T & { _id: string }>> {
   // @ts-ignore
   let searchResult = await model.find({ $or: fieldsName.map(it => ({ [it]: { $regex: query, $options: 'i' } })) });
 

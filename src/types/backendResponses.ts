@@ -48,9 +48,11 @@ export type SendMessageResponse = string | { dialogId: string };
 export type FoundedUser = {
   first_name: string;
   last_name: string;
-  _id: string;
+  id: string;
 };
+
 export type SearchUsersResponse = string | Array<FoundedUser>;
+export type SearchUsersSuccessResponse = Array<FoundedUser>;
 
 export type FoundedMessage = {
   from: string;

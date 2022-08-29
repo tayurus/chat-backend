@@ -3,25 +3,18 @@ import { UserType } from '@/model/user';
 import jwt from 'jsonwebtoken';
 import { Dialog } from '@/model/dialog';
 import { WebSocketModule } from '@utils/websocketModule';
-import { UserInfoInDialog, WebSocketMessage, WebSocketsEvents, WsUserTypingResponse, WsUserUpdatedResponse } from '@/types/backendResponses';
+import {
+  FoundedUser,
+  UserInfoInDialog,
+  WebSocketMessage,
+  WebSocketsEvents,
+  WsUserTypingResponse,
+  WsUserUpdatedResponse,
+} from '@/types/backendResponses';
 import WebSocket from 'ws';
 import { PING_PONG_DATA, PING_PONG_WAIT_TIMEOUT } from '@utils/webSocketsConstants';
 import { WsUserTypingParams } from '@/types/backendParams';
 import { getAllDialogParticipantsExceptCurrentUser } from '@utils/dialog';
-
-/**
- * Возвращает ФИО пользователя из ячейки БД
- * */
-export function getUserFIOByDbEntity(userData: Mongoose.Document<unknown, any, UserType> & UserType & { _id: Mongoose.Types.ObjectId }) {
-  return `${userData.last_name} ${userData.first_name}`;
-}
-
-/**
- * Возвращает ФИО пользователя
- * */
-export function getUserFIOByData(params: { first_name: string; last_name: string }) {
-  return `${params.last_name} ${params.first_name}`;
-}
 
 /**
  * авторизовывает пользователя
@@ -116,4 +109,15 @@ export async function notifyThatUserTypingToDialogParticipants(params: WsUserTyp
   const data: WebSocketMessage<WsUserTypingResponse> = { type: WebSocketsEvents.USER_TYPING, data: { typingType, userId: typingUserId, dialogId } };
 
   WebSocketModule.clients[dialogParticipantsExceptTypingUser]?.send(JSON.stringify(data));
+}
+
+/**
+ * нормализует данные о пользователе из БД
+ * @param userFromDb - данные о пользователе из БД
+ * @return - нормализованные данные (вместо _id будет id)
+ * */
+export function normalizeFoundedUser(
+  userFromDb: Mongoose.Document<Mongoose.Types.ObjectId, any, UserType> & UserType & { _id: Mongoose.Types.ObjectId },
+): FoundedUser {
+  return { id: userFromDb._id.toString(), last_name: userFromDb.last_name, first_name: userFromDb.first_name };
 }
