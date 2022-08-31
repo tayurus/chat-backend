@@ -1,3 +1,5 @@
+import { BASE_ROUTES } from '@/types/backendAndFrontendCommonTypes/routes';
+
 require('dotenv').config();
 import { connectToDB } from '@/config/database';
 import express from 'express';
@@ -57,7 +59,7 @@ const corsConfig = {
 app.use(express.json());
 app.use(cors(corsConfig));
 app.use(cookieParser());
-app.use('/user', userRouter);
+app.use(BASE_ROUTES.USER, userRouter);
 app.use('/message', verifyToken, messageRouter);
 app.use('/dialog', verifyToken, dialogRouter);
 

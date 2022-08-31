@@ -14,7 +14,7 @@ export const registerUser = async (req: TypedRequestBody<RegisterUserBodyParams>
 
     // Validate user input
     if (!(email && password && first_name && last_name)) {
-      return res.status(400).send('All input is required');
+      return res.status(400).send(ERROR_MESSAGES.ALL_INPUT_IS_REQUIRED);
     }
 
     // check if user already exist
@@ -22,7 +22,7 @@ export const registerUser = async (req: TypedRequestBody<RegisterUserBodyParams>
     const oldUser = await User.findOne({ email });
 
     if (oldUser) {
-      return res.status(409).send('User Already Exist. Please Login');
+      return res.status(409).send(ERROR_MESSAGES.USER_ALREADY_EXISTS);
     }
 
     //Encrypt user password

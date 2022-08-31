@@ -1,10 +1,9 @@
 import mongoose from 'mongoose';
 
-const { MONGO_URI } = process.env;
-
 export let dbConnection: mongoose.Connection;
 
 export const connectToDB = () => {
+  const { MONGO_URI } = process.env;
   // Подключаемся к базе
   return (
     mongoose
@@ -26,3 +25,16 @@ export const connectToDB = () => {
       })
   );
 };
+
+export const clearDB = async () => {
+  const collections = mongoose.connection.collections;
+  for (const key in collections) {
+    const collection = collections[key];
+    await collection.deleteMany({});
+  }
+};
+
+export async function disconnectFromDB() {
+  await mongoose.connection.dropDatabase();
+  await mongoose.connection.close();
+}

@@ -8,4 +8,6 @@ export enum ERROR_MESSAGES {
   DIALOG_NOT_FOUND = 'dialog not found',
   QUERY_STRING_IS_EMTY = 'query string can not be empty',
   REGISTER_ERROR = 'register error',
+  ALL_INPUT_IS_REQUIRED = 'All input is required',
+  USER_ALREADY_EXISTS = 'User already exists',
 }
