@@ -61,4 +61,8 @@ app.use('/user', userRouter);
 app.use('/message', verifyToken, messageRouter);
 app.use('/dialog', verifyToken, dialogRouter);
 
+app.get('/', function (request, response) {
+  response.send('Hello Test');
+});
+
 export { app };
