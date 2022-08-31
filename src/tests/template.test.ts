@@ -1,10 +1,18 @@
 import request from 'supertest';
 import { app } from '../app';
 
-import { describe } from '@jest/globals';
+import { describe, test } from '@jest/globals';
+import { connectToDB } from '../config/database';
+import { User } from '../model/user';
 
 describe('sum module', () => {
-  it('should return Hello Test', function (done) {
-    request(app).get('/').expect('Hello Test').end(done);
+  // @ts-ignore
+  test('should return Hello Test', async () => {
+    await connectToDB();
+    const users = await User.find({});
+    console.log('users = ', users);
+    // request(app).get('/').expect('Hello Test');
+    const res = await request(app).get('/');
+    expect(res.text).toBe('Hello Test');
   });
 });
