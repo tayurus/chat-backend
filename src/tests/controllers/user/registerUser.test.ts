@@ -20,8 +20,11 @@ describe('Регистрация', () => {
     request(app)
       .post(`${BASE_ROUTES.USER}/${USER_ROUTES.REGISTER}`)
       .send(SUCCESS_INPUT_DATA)
-      .expect(200)
+      .expect(201)
       .end(async function (err, res) {
+        if (err) {
+          return done(err);
+        }
         // проверить, что в ответе есть объект с нужными полями
         expect(res.body.first_name).toBe(SUCCESS_INPUT_DATA.first_name);
         expect(res.body.last_name).toBe(SUCCESS_INPUT_DATA.last_name);
@@ -45,8 +48,11 @@ describe('Регистрация', () => {
     request(app)
       .post(`${BASE_ROUTES.USER}/${USER_ROUTES.REGISTER}`)
       .send(partialRegisterData)
-      .expect(200)
+      .expect(400)
       .end(async function (err, res) {
+        if (err) {
+          return done(err);
+        }
         // проверить, что в ответе есть текст ошибки
         expect(res.text).toBe(ERROR_MESSAGES.ALL_INPUT_IS_REQUIRED);
 
@@ -62,13 +68,19 @@ describe('Регистрация', () => {
     request(app)
       .post(`${BASE_ROUTES.USER}/${USER_ROUTES.REGISTER}`)
       .send(SUCCESS_INPUT_DATA)
-      .expect(200)
+      .expect(201)
       .end(function (err, res) {
+        if (err) {
+          return done(err);
+        }
         request(app)
           .post(`${BASE_ROUTES.USER}/${USER_ROUTES.REGISTER}`)
           .send(SUCCESS_INPUT_DATA)
-          .expect(400)
+          .expect(409)
           .end(async function (err, res) {
+            if (err) {
+              return done(err);
+            }
             // проверить, что в ответе ошибка, что пользователь уже зареган
             expect(res.text).toBe(ERROR_MESSAGES.USER_ALREADY_EXISTS);
 

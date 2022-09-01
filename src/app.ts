@@ -60,8 +60,8 @@ app.use(express.json());
 app.use(cors(corsConfig));
 app.use(cookieParser());
 app.use(BASE_ROUTES.USER, userRouter);
-app.use('/message', verifyToken, messageRouter);
-app.use('/dialog', verifyToken, dialogRouter);
+app.use(BASE_ROUTES.MESSAGE, verifyToken, messageRouter);
+app.use(BASE_ROUTES.DIALOG, verifyToken, dialogRouter);
 
 app.get('/', function (request, response) {
   response.send('Hello Test');

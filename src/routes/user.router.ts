@@ -9,8 +9,8 @@ import { USER_ROUTES } from '@/types/backendAndFrontendCommonTypes/routes';
 const userRouter = express.Router();
 
 userRouter.post(USER_ROUTES.REGISTER, registerUser);
-userRouter.post('/login', loginUser);
-userRouter.get('/search', searchUsers);
-userRouter.get('/whoAmI', verifyToken, whoAmI);
+userRouter.post(USER_ROUTES.LOGIN, loginUser);
+userRouter.get(USER_ROUTES.SEARCH_USERS, searchUsers);
+userRouter.get(USER_ROUTES.WHO_AM_I, verifyToken, whoAmI);
 
 export { userRouter };
