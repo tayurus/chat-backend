@@ -18,7 +18,7 @@ describe('Регистрация', () => {
   test('---- успешный сценарий ----', done => {
     // отправить запрос на регистрацию
     request(app)
-      .post(`${BASE_ROUTES.USER}/${USER_ROUTES.REGISTER}`)
+      .post(`${BASE_ROUTES.USER}${USER_ROUTES.REGISTER}`)
       .send(SUCCESS_INPUT_DATA)
       .expect(201)
       .end(async function (err, res) {
@@ -43,10 +43,11 @@ describe('Регистрация', () => {
   });
 
   test('---- неуспешный сценарий (не все поля переданы) ----', done => {
-    const partialRegisterData: Partial<RegisterUserBodyParams> = { first_name: 'Юрец', last_name: 'Татар', password: '1' };
+    const partialRegisterData: Partial<RegisterUserBodyParams> = Object.assign({}, SUCCESS_INPUT_DATA);
+    delete partialRegisterData.last_name;
     // отправить запрос на регистрацию
     request(app)
-      .post(`${BASE_ROUTES.USER}/${USER_ROUTES.REGISTER}`)
+      .post(`${BASE_ROUTES.USER}${USER_ROUTES.REGISTER}`)
       .send(partialRegisterData)
       .expect(400)
       .end(async function (err, res) {
@@ -66,7 +67,7 @@ describe('Регистрация', () => {
   test('---- неуспешный сценарий (пользователь уже зареган) ----', done => {
     // отправить запрос на регистрацию
     request(app)
-      .post(`${BASE_ROUTES.USER}/${USER_ROUTES.REGISTER}`)
+      .post(`${BASE_ROUTES.USER}${USER_ROUTES.REGISTER}`)
       .send(SUCCESS_INPUT_DATA)
       .expect(201)
       .end(function (err, res) {
@@ -74,7 +75,7 @@ describe('Регистрация', () => {
           return done(err);
         }
         request(app)
-          .post(`${BASE_ROUTES.USER}/${USER_ROUTES.REGISTER}`)
+          .post(`${BASE_ROUTES.USER}${USER_ROUTES.REGISTER}`)
           .send(SUCCESS_INPUT_DATA)
           .expect(409)
           .end(async function (err, res) {
