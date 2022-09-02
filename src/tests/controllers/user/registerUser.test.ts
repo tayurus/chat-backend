@@ -9,7 +9,10 @@ import { User } from '../../../model/user';
 
 beforeAll(async () => await connectToDB());
 afterEach(async () => await clearDB());
-afterAll(async () => await disconnectFromDB());
+afterAll(async () => {
+  app.wsServer.close();
+  await disconnectFromDB();
+});
 
 const REGISTER_SUCCESS_INPUT_DATA: RegisterUserBodyParams = { first_name: 'Юрец', last_name: 'Татар', email: 'sooqa@mail.ru', password: '1' };
 const REGISTER_FAILED_INPUT_DATA: Partial<RegisterUserBodyParams> = Object.assign({}, REGISTER_SUCCESS_INPUT_DATA);
