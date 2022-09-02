@@ -11,7 +11,9 @@ beforeAll(async () => await connectToDB());
 afterEach(async () => await clearDB());
 afterAll(async () => await disconnectFromDB());
 
-const SUCCESS_INPUT_DATA: RegisterUserBodyParams = { first_name: 'Юрец', last_name: 'Татар', email: 'sooqa@mail.ru', password: '1' };
+const REGISTER_SUCCESS_INPUT_DATA: RegisterUserBodyParams = { first_name: 'Юрец', last_name: 'Татар', email: 'sooqa@mail.ru', password: '1' };
+const REGISTER_FAILED_INPUT_DATA: Partial<RegisterUserBodyParams> = Object.assign({}, REGISTER_SUCCESS_INPUT_DATA);
+delete REGISTER_FAILED_INPUT_DATA.first_name;
 
 // тест регистрации пользователя
 describe('Регистрация', () => {
@@ -19,16 +21,16 @@ describe('Регистрация', () => {
     // отправить запрос на регистрацию
     request(app)
       .post(`${BASE_ROUTES.USER}${USER_ROUTES.REGISTER}`)
-      .send(SUCCESS_INPUT_DATA)
+      .send(REGISTER_SUCCESS_INPUT_DATA)
       .expect(201)
       .end(async function (err, res) {
         if (err) {
           return done(err);
         }
         // проверить, что в ответе есть объект с нужными полями
-        expect(res.body.first_name).toBe(SUCCESS_INPUT_DATA.first_name);
-        expect(res.body.last_name).toBe(SUCCESS_INPUT_DATA.last_name);
-        expect(res.body.email).toBe(SUCCESS_INPUT_DATA.email);
+        expect(res.body.first_name).toBe(REGISTER_SUCCESS_INPUT_DATA.first_name);
+        expect(res.body.last_name).toBe(REGISTER_SUCCESS_INPUT_DATA.last_name);
+        expect(res.body.email).toBe(REGISTER_SUCCESS_INPUT_DATA.email);
         expect(res.body.id).not.toBe(undefined);
 
         // проверить, что в БД появился пользователя с таким же id
@@ -43,12 +45,10 @@ describe('Регистрация', () => {
   });
 
   test('---- неуспешный сценарий (не все поля переданы) ----', done => {
-    const partialRegisterData: Partial<RegisterUserBodyParams> = Object.assign({}, SUCCESS_INPUT_DATA);
-    delete partialRegisterData.last_name;
     // отправить запрос на регистрацию
     request(app)
       .post(`${BASE_ROUTES.USER}${USER_ROUTES.REGISTER}`)
-      .send(partialRegisterData)
+      .send(REGISTER_FAILED_INPUT_DATA)
       .expect(400)
       .end(async function (err, res) {
         if (err) {
@@ -58,7 +58,7 @@ describe('Регистрация', () => {
         expect(res.text).toBe(ERROR_MESSAGES.ALL_INPUT_IS_REQUIRED);
 
         // в бд нет пользователя с таким email
-        const registeredUserInDb = await User.find({ email: SUCCESS_INPUT_DATA.email });
+        const registeredUserInDb = await User.find({ email: REGISTER_SUCCESS_INPUT_DATA.email });
         expect(registeredUserInDb.length).toBe(0);
         done();
       });
@@ -68,7 +68,7 @@ describe('Регистрация', () => {
     // отправить запрос на регистрацию
     request(app)
       .post(`${BASE_ROUTES.USER}${USER_ROUTES.REGISTER}`)
-      .send(SUCCESS_INPUT_DATA)
+      .send(REGISTER_SUCCESS_INPUT_DATA)
       .expect(201)
       .end(function (err, res) {
         if (err) {
@@ -76,7 +76,7 @@ describe('Регистрация', () => {
         }
         request(app)
           .post(`${BASE_ROUTES.USER}${USER_ROUTES.REGISTER}`)
-          .send(SUCCESS_INPUT_DATA)
+          .send(REGISTER_SUCCESS_INPUT_DATA)
           .expect(409)
           .end(async function (err, res) {
             if (err) {
@@ -86,7 +86,7 @@ describe('Регистрация', () => {
             expect(res.text).toBe(ERROR_MESSAGES.USER_ALREADY_EXISTS);
 
             // проверить, что в БД НЕ ПОЯВИЛСЯ ВТОРОЙ пользователь с таким же email
-            const registeredUserInDb = await User.find({ email: SUCCESS_INPUT_DATA.email });
+            const registeredUserInDb = await User.find({ email: REGISTER_SUCCESS_INPUT_DATA.email });
             expect(registeredUserInDb.length).toBe(1);
 
             done();
