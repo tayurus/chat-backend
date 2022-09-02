@@ -10,7 +10,6 @@ import { User } from '../../../model/user';
 beforeAll(async () => await connectToDB());
 afterEach(async () => await clearDB());
 afterAll(async () => {
-  app.wsServer.close();
   await disconnectFromDB();
 });
 

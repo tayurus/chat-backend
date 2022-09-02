@@ -67,7 +67,4 @@ app.get('/', function (request, response) {
   response.send('Hello Test');
 });
 
-// ужасный костыль, чтобы в тестах закрыть сервер вебсокетов
-app.wsServer = WebSocketModule.server;
-
 export { app };
