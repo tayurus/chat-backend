@@ -38,6 +38,10 @@ describe('Авторизация', () => {
             // в ответе будет инфа о пользователе
             expect(res.body.email).toBe(REGISTER_SUCCESS_INPUT_DATA.email);
             expect(res.body.id).not.toBe(undefined);
+
+            // проверить, что в куках пришел токен
+            expect(res.headers['set-cookie'][0].startsWith('token=')).toBe(true);
+
             done();
           });
       });
@@ -48,7 +52,6 @@ describe('Авторизация', () => {
 // логинимся
 // статус ответа успешный
 // в ответе будет инфа о пользователе
-// в куках появится токен
 
 // неуспешный сценарий - неверные данные
 // регаемся
