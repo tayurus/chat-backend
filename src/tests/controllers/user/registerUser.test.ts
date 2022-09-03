@@ -6,6 +6,7 @@ import { BASE_ROUTES, USER_ROUTES } from '../../../types/backendAndFrontendCommo
 import { RegisterUserBodyParams } from '../../../types/backendParams';
 import { ERROR_MESSAGES } from '../../../utils/errorMessages';
 import { User } from '../../../model/user';
+import { REGISTER_SUCCESS_INPUT_DATA } from '../../helpers';
 
 beforeAll(async () => await connectToDB());
 afterEach(async () => await clearDB());
@@ -13,7 +14,6 @@ afterAll(async () => {
   await disconnectFromDB();
 });
 
-const REGISTER_SUCCESS_INPUT_DATA: RegisterUserBodyParams = { first_name: 'Юрец', last_name: 'Татар', email: 'sooqa@mail.ru', password: '1' };
 const REGISTER_FAILED_INPUT_DATA: Partial<RegisterUserBodyParams> = Object.assign({}, REGISTER_SUCCESS_INPUT_DATA);
 delete REGISTER_FAILED_INPUT_DATA.first_name;
 
