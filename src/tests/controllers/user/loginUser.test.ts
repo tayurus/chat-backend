@@ -4,6 +4,7 @@ import { describe } from '@jest/globals';
 import request from 'supertest';
 import { app } from '../../../app';
 import { BASE_ROUTES, USER_ROUTES } from '../../../types/backendAndFrontendCommonTypes/routes';
+import { ERROR_MESSAGES } from '../../../utils/errorMessages';
 
 beforeAll(async () => await connectToDB());
 afterEach(async () => await clearDB());
@@ -13,6 +14,7 @@ afterAll(async () => {
 
 const REGISTER_SUCCESS_INPUT_DATA: RegisterUserBodyParams = { first_name: 'Юрец', last_name: 'Татар', email: 'sooqa@mail.ru', password: '1' };
 const LOGIN_SUCCESS_INPUT_DATA: LoginUserBodyParams = { email: REGISTER_SUCCESS_INPUT_DATA.email, password: REGISTER_SUCCESS_INPUT_DATA.password };
+const LOGIN_PARTIAL_INPUT_DATA: Partial<LoginUserBodyParams> = { email: 'test@mail.ru' };
 
 describe('Авторизация', () => {
   test('---- успешный сценарий ----', done => {
@@ -46,21 +48,36 @@ describe('Авторизация', () => {
           });
       });
   });
+
+  test('---- неуспешный сценарий - неверные данные ----', done => {
+    // // логинимся с неправильными данными (мы не зарегались)
+    request(app)
+      .post(`${BASE_ROUTES.USER}${USER_ROUTES.LOGIN}`)
+      .send(LOGIN_SUCCESS_INPUT_DATA)
+      .expect(404)
+      .end(function (err, res) {
+        if (err) {
+          return done(err);
+        }
+        // в ответе будет текст ошибки
+        expect(res.text).toBe(ERROR_MESSAGES.USER_NOT_FOUND);
+        done();
+      });
+  });
+
+  test('---- неуспешный сценарий - неполные данные ----', done => {
+    // логинимся с неполными данными
+    request(app)
+      .post(`${BASE_ROUTES.USER}${USER_ROUTES.LOGIN}`)
+      .send(LOGIN_PARTIAL_INPUT_DATA)
+      .expect(400)
+      .end(function (err, res) {
+        if (err) {
+          return done(err);
+        }
+        // в ответе будет текст ошибки
+        expect(res.text).toBe(ERROR_MESSAGES.INVALID_DATA);
+        done();
+      });
+  });
 });
-
-// регаемся
-// логинимся
-// статус ответа успешный
-// в ответе будет инфа о пользователе
-
-// неуспешный сценарий - неверные данные
-// регаемся
-// логинимся с неправильными данными
-// статус ответа неуспешный
-// в ответе будет текст ошибки
-
-// неуспешный сценарий - неполные данные
-// регаемся
-// логинимся с неполными данными
-// статус ответа неуспешный
-// в ответе будет текст ошибки

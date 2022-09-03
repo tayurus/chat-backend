@@ -16,7 +16,7 @@ export const loginUser = async (req: TypedRequestBody<LoginUserBodyParams>, res:
     const user = await User.findOne({ email });
 
     if (!user) {
-      return res.status(400).send(ERROR_MESSAGES.USER_NOT_FOUND);
+      return res.status(404).send(ERROR_MESSAGES.USER_NOT_FOUND);
     }
 
     if (user && (await compare(password, user.password!))) {
