@@ -18,7 +18,7 @@ const LOGIN_PARTIAL_INPUT_DATA: Partial<LoginUserBodyParams> = { email: 'test@ma
 
 describe('Авторизация', () => {
   test('---- успешный сценарий ----', done => {
-    // // регаемся
+    // регаемся
     request(app)
       .post(`${BASE_ROUTES.USER}${USER_ROUTES.REGISTER}`)
       .send(REGISTER_SUCCESS_INPUT_DATA)
