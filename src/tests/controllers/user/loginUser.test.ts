@@ -6,10 +6,13 @@ import { app } from '../../../app';
 import { BASE_ROUTES, USER_ROUTES } from '../../../types/backendAndFrontendCommonTypes/routes';
 import { ERROR_MESSAGES } from '../../../utils/errorMessages';
 import { LOGIN_SUCCESS_INPUT_DATA, REGISTER_SUCCESS_INPUT_DATA, registerUserForTest } from '../../helpers';
+import { WebSocketModule } from '../../../utils/websocketModule';
 
 beforeAll(async () => await connectToDB());
-beforeEach(async () => {
-  await registerUserForTest();
+beforeEach(done => {
+  registerUserForTest().then(() => {
+    WebSocketModule.server.close(() => done());
+  });
 });
 afterEach(async () => await clearDB());
 afterAll(async () => {

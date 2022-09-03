@@ -7,9 +7,14 @@ import { RegisterUserBodyParams } from '../../../types/backendParams';
 import { ERROR_MESSAGES } from '../../../utils/errorMessages';
 import { User } from '../../../model/user';
 import { REGISTER_SUCCESS_INPUT_DATA } from '../../helpers';
+import { WebSocketModule } from '../../../utils/websocketModule';
 
 beforeAll(async () => await connectToDB());
-afterEach(async () => await clearDB());
+afterEach(done => {
+  clearDB().then(() => {
+    WebSocketModule.server.close(() => done());
+  });
+});
 afterAll(async () => {
   await disconnectFromDB();
 });
