@@ -2,19 +2,35 @@ import request from 'supertest';
 import { app } from '../../../app';
 import { describe, test } from '@jest/globals';
 import { clearDB, connectToDB, disconnectFromDB } from '../../../config/database';
-import { RegisteredUserForTest, registerUserForTest } from '../../helpers';
+import { getTokenForCookie, RegisteredUserForTest, registerUserForTest } from '../../helpers';
 import { WebSocketModule } from '../../../utils/websocketModule';
 import { REGISTER_SUCCESS_INPUT_DATA, REGISTER_SUCCESS_INPUT_DATA2 } from '../../helpers';
 import { BASE_ROUTES, MESSAGE_ROUTES } from '../../../types/backendAndFrontendCommonTypes/routes';
 import { SendMessageBodyParams } from '../../../types/backendParams';
 import { SendMessageSuccessResponse } from '../../../types/backendResponses';
+import { Dialog } from '../../../model/dialog';
+import { Message } from '../../../model/message';
+import { ERROR_MESSAGES } from '../../../utils/errorMessages';
 
 let registeredUsers: Record<string, RegisteredUserForTest> = {};
+
+const SEND_MESSAGE_BODY_PARAMS_WITHOUT_DIALOG_ID: SendMessageBodyParams = {
+  message: 'hello!',
+  dialogId: undefined,
+  toUserId: '1',
+};
+
+const SEND_MESSAGE_BODY_PARAMS_WITH_DIALOG_ID: SendMessageBodyParams = {
+  message: 'hello!',
+  dialogId: undefined,
+  toUserId: '1',
+};
 
 beforeAll(async () => await connectToDB());
 beforeEach(done => {
   registerUserForTest([REGISTER_SUCCESS_INPUT_DATA, REGISTER_SUCCESS_INPUT_DATA2]).then(authTokensFromBackend => {
     registeredUsers = Object.assign({}, authTokensFromBackend);
+    SEND_MESSAGE_BODY_PARAMS_WITHOUT_DIALOG_ID.toUserId = registeredUsers[REGISTER_SUCCESS_INPUT_DATA2.email].id;
     WebSocketModule.server.close(() => done());
   });
 });
@@ -23,60 +39,150 @@ afterAll(async () => {
   await disconnectFromDB();
 });
 
-const SEND_MESSAGE_BODY_PARAMS_WITHOUT_DIALOG_ID: SendMessageBodyParams = {
-  message: 'hello!',
-  dialogId: undefined,
-  toUserId: '1',
-};
-
 describe('Отправка сообщения', () => {
   test('успешный сценарий - диалога еще нет', done => {
     request(app)
       .post(`${BASE_ROUTES.MESSAGE}${MESSAGE_ROUTES.SEND}`)
-      .set('Cookie', [`token=${registeredUsers[REGISTER_SUCCESS_INPUT_DATA.email]}`])
+      .set('Cookie', getTokenForCookie({ registeredUsers, email: REGISTER_SUCCESS_INPUT_DATA.email }))
       // отправляем сообщение
       .send(SEND_MESSAGE_BODY_PARAMS_WITHOUT_DIALOG_ID)
       .expect(200)
-      .end(function (err, res) {
+      .end(async function (err, res) {
         if (err) {
           console.log('err = ', err);
         }
+
         const bodyResponse: SendMessageSuccessResponse = res.body;
-        console.log('registeredUsers = ', registeredUsers);
-        console.log('bodyResponse = ', bodyResponse);
         // в ответ придет id диалога
         expect(bodyResponse.dialogId).not.toBe(undefined);
+        // проверим, что в базе такой диалог есть
+        const createdDialog = await Dialog.findById(bodyResponse.dialogId);
+        expect(createdDialog!._id).not.toBe(undefined);
+        expect(createdDialog!.participants.length).toBe(2);
 
+        // проверим, что в базе есть сообщение с таким dialogId
+        const createdMessage = await Message.find({ dialogId: createdDialog!._id });
+        expect(createdMessage[0].content).toBe(SEND_MESSAGE_BODY_PARAMS_WITHOUT_DIALOG_ID.message);
+        done();
+      });
+  });
+
+  test('успешный сценарий - диалог есть', done => {
+    request(app)
+      .post(`${BASE_ROUTES.MESSAGE}${MESSAGE_ROUTES.SEND}`)
+      .set('Cookie', getTokenForCookie({ registeredUsers, email: REGISTER_SUCCESS_INPUT_DATA.email }))
+      // отправляем сообщение, чтобы создать диалог
+      .send(SEND_MESSAGE_BODY_PARAMS_WITHOUT_DIALOG_ID)
+      .expect(200)
+      .end(async function (err, res) {
+        if (err) {
+          console.log('err = ', err);
+        }
+
+        const bodyResponse: SendMessageSuccessResponse = res.body;
+        SEND_MESSAGE_BODY_PARAMS_WITH_DIALOG_ID.dialogId = bodyResponse.dialogId;
+
+        // отправляем еще одно сообщение в этот диалог
+        request(app)
+          .post(`${BASE_ROUTES.MESSAGE}${MESSAGE_ROUTES.SEND}`)
+          .set('Cookie', getTokenForCookie({ registeredUsers, email: REGISTER_SUCCESS_INPUT_DATA.email }))
+          // отправляем сообщение, чтобы создать диалог
+          .send(SEND_MESSAGE_BODY_PARAMS_WITH_DIALOG_ID)
+          .expect(200)
+          .end(async function (err, res) {
+            if (err) {
+              console.log('err = ', err);
+            }
+            // в ответ придет id диалога
+            expect(bodyResponse.dialogId).not.toBe(undefined);
+            // проверим, что в базе такой диалог есть
+            const createdDialog = await Dialog.findById(bodyResponse.dialogId);
+            expect(createdDialog!._id).not.toBe(undefined);
+            expect(createdDialog!.participants.length).toBe(2);
+
+            // проверим, что в базе есть  2 сообщения с таким dialogId
+            const createdMessage = await Message.find({ dialogId: createdDialog!._id });
+            expect(createdMessage.length).toBe(2);
+            done();
+          });
+      });
+  });
+
+  test('неуспешный сценарий - пустое сообщение (для нового диалога)', done => {
+    request(app)
+      .post(`${BASE_ROUTES.MESSAGE}${MESSAGE_ROUTES.SEND}`)
+      .set('Cookie', getTokenForCookie({ registeredUsers, email: REGISTER_SUCCESS_INPUT_DATA.email }))
+      // отправляем сообщение
+      .send({ ...SEND_MESSAGE_BODY_PARAMS_WITHOUT_DIALOG_ID, message: '' })
+      .expect(400)
+      .end(async function (err, res) {
+        if (err) {
+          console.log('err = ', err);
+        }
+
+        // в ответ придет ошибка
+        expect(res.text).toBe(ERROR_MESSAGES.TEXT_MESSAGE_NOT_FOUND);
+
+        // в базе нет диалогов
+        const dialogs = await Dialog.find({});
+        expect(dialogs.length).toBe(0);
+
+        // в базе нет сообщений
+        const messages = await Message.find({});
+        expect(messages.length).toBe(0);
+        done();
+      });
+  });
+
+  test('неуспешный сценарий - получатель не найден', done => {
+    request(app)
+      .post(`${BASE_ROUTES.MESSAGE}${MESSAGE_ROUTES.SEND}`)
+      .set('Cookie', getTokenForCookie({ registeredUsers, email: REGISTER_SUCCESS_INPUT_DATA.email }))
+      // // отправляем сообщение несуществующему получателю
+      .send({ ...SEND_MESSAGE_BODY_PARAMS_WITHOUT_DIALOG_ID, toUserId: '1488228' })
+      .expect(400)
+      .end(async function (err, res) {
+        if (err) {
+          console.log('err = ', err);
+        }
+
+        // в ответ придет ошибка
+        expect(res.text).toBe(ERROR_MESSAGES.SEND_MESSAGE_ERROR);
+
+        // в базе нет диалогов
+        const dialogs = await Dialog.find({});
+        expect(dialogs.length).toBe(0);
+
+        // в базе нет сообщений
+        const messages = await Message.find({});
+        expect(messages.length).toBe(0);
+        done();
+      });
+  });
+
+  test('неуспешный сценарий - диалог не найден', done => {
+    request(app)
+      .post(`${BASE_ROUTES.MESSAGE}${MESSAGE_ROUTES.SEND}`)
+      .set('Cookie', getTokenForCookie({ registeredUsers, email: REGISTER_SUCCESS_INPUT_DATA.email }))
+      // // отправляем сообщение несуществующему получателю
+      .send({ ...SEND_MESSAGE_BODY_PARAMS_WITHOUT_DIALOG_ID, dialogId: '1488228' })
+      .expect(400)
+      .end(async function (err, res) {
+        if (err) {
+          console.log('err = ', err);
+        }
+
+        // в ответ придет ошибка
+        expect(res.text).toBe(ERROR_MESSAGES.SEND_MESSAGE_ERROR);
+
+        // в базе нет диалогов
+        const dialogs = await Dialog.find({});
+        expect(dialogs.length).toBe(0);
+
+        // в базе нет сообщений
+        const messages = await Message.find({});
+        expect(messages.length).toBe(0);
         done();
       });
   });
 });
-
-// успешный сценарий - диалога еще нет
-// отправляем сообщение
-// в ответ придет id диалога
-// проверим, что в базе такой диалог есть
-// проверим, что в базе есть сообщение с таким dialogId
-
-// успешный сценарий - диалог есть
-// отправляем сообщение
-// в ответ придет id диалога
-// проверим, что в базе есть как минимум 2 сообщения с таким dialogId
-
-// неуспешный сценарий - пустое сообщение (для нового диалога)
-// отправляем сообщение
-// в ответ придет ошибка
-// в базе нет диалогов
-// в базе нет сообщений
-
-// неуспешный сценарий - не передали токен
-// отправляем сообщение, не указав токен
-// в ответ придет ошибка
-// в базе нет диалогов
-// в базе нет сообщений
-
-// неуспешный сценарий - получатель не найден
-// отправляем сообщение несуществующему получателю
-// в ответ придет ошибка
-// в базе нет диалогов
-// в базе нет сообщений
