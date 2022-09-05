@@ -91,6 +91,22 @@ describe('Поиск пользователей', () => {
         done();
       });
   });
-});
+  test('----- неуспешный сценарий - не передали токен ------', done => {
+    request(app)
+      .get(`${BASE_ROUTES.USER}${USER_ROUTES.SEARCH_USERS}?query=`)
+      // НЕ ПЕРЕДАЕМ ТОКЕН
+      // .set('Cookie', [`token=${authTokens[REGISTER_SUCCESS_INPUT_DATA.email]}`])
+      .send()
+      .expect(403)
+      .end((err, res) => {
+        if (err) {
+          console.log('err = ', err);
+        }
 
-// неуспешный сценарий - не передали токен
+        expect(JSON.stringify(res.body)).toBe('{}');
+        expect(res.text).toBe(ERROR_MESSAGES.TOKEN_REQUIRED);
+
+        done();
+      });
+  });
+});

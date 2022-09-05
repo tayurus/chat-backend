@@ -15,7 +15,6 @@ export const connectToDB = () => {
         replicaSet: 'rs',
       })
       .then(() => {
-        console.log('К базе подключился, получается');
         dbConnection = mongoose.connection;
       })
       .catch(error => {

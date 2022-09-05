@@ -10,4 +10,5 @@ export enum ERROR_MESSAGES {
   REGISTER_ERROR = 'register error',
   ALL_INPUT_IS_REQUIRED = 'All input is required',
   USER_ALREADY_EXISTS = 'User already exists',
+  TOKEN_REQUIRED = 'You did not pass auth token!',
 }
