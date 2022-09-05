@@ -1,5 +1,5 @@
 import { clearDB, connectToDB, disconnectFromDB } from '../../../config/database';
-import { LoginUserBodyParams, RegisterUserBodyParams } from '../../../types/backendParams';
+import { LoginUserBodyParams } from '../../../types/backendParams';
 import { describe } from '@jest/globals';
 import request from 'supertest';
 import { app } from '../../../app';

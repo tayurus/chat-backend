@@ -1,18 +1,24 @@
 import { clearDB, connectToDB, disconnectFromDB } from '../../../config/database';
 import { WebSocketModule } from '../../../utils/websocketModule';
-import { REGISTER_SUCCESS_INPUT_DATA, REGISTER_SUCCESS_INPUT_DATA2, registerUserForTest } from '../../helpers';
+import {
+  getTokenForCookie,
+  REGISTER_SUCCESS_INPUT_DATA,
+  REGISTER_SUCCESS_INPUT_DATA2,
+  RegisteredUserForTest,
+  registerUserForTest,
+} from '../../helpers';
 import { describe } from '@jest/globals';
 import request from 'supertest';
 import { app } from '../../../app';
 import { BASE_ROUTES, USER_ROUTES } from '../../../types/backendAndFrontendCommonTypes/routes';
 import { ERROR_MESSAGES } from '../../../utils/errorMessages';
 
-let authTokens: Record<string, string> = {};
+let registeredUsers: Record<string, RegisteredUserForTest> = {};
 
 beforeAll(async () => await connectToDB());
 beforeEach(done => {
   registerUserForTest([REGISTER_SUCCESS_INPUT_DATA, REGISTER_SUCCESS_INPUT_DATA2]).then(authTokensFromBackend => {
-    authTokens = Object.assign({}, authTokensFromBackend);
+    registeredUsers = Object.assign({}, authTokensFromBackend);
     WebSocketModule.server.close(() => done());
   });
 });
@@ -25,7 +31,7 @@ describe('Поиск пользователей', () => {
   test('----- успешный сценарий - пользователь найден ------', done => {
     request(app)
       .get(`${BASE_ROUTES.USER}${USER_ROUTES.SEARCH_USERS}?query=${REGISTER_SUCCESS_INPUT_DATA.first_name}`)
-      .set('Cookie', [`token=${authTokens[REGISTER_SUCCESS_INPUT_DATA.email]}`])
+      .set('Cookie', getTokenForCookie({ registeredUsers, email: REGISTER_SUCCESS_INPUT_DATA.email }))
       .send()
       .expect(200)
       .end((err, res) => {
@@ -43,7 +49,7 @@ describe('Поиск пользователей', () => {
   test('----- успешный сценарий - пользователь не найден ------', done => {
     request(app)
       .get(`${BASE_ROUTES.USER}${USER_ROUTES.SEARCH_USERS}?query=${REGISTER_SUCCESS_INPUT_DATA.first_name + 'shit'}`)
-      .set('Cookie', [`token=${authTokens[REGISTER_SUCCESS_INPUT_DATA.email]}`])
+      .set('Cookie', getTokenForCookie({ registeredUsers, email: REGISTER_SUCCESS_INPUT_DATA.email }))
       .send()
       .expect(200)
       .end((err, res) => {
@@ -60,7 +66,7 @@ describe('Поиск пользователей', () => {
   test('----- успешный сценарий - пользователь не найден ------', done => {
     request(app)
       .get(`${BASE_ROUTES.USER}${USER_ROUTES.SEARCH_USERS}?query=r`)
-      .set('Cookie', [`token=${authTokens[REGISTER_SUCCESS_INPUT_DATA.email]}`])
+      .set('Cookie', getTokenForCookie({ registeredUsers, email: REGISTER_SUCCESS_INPUT_DATA.email }))
       .send()
       .expect(200)
       .end((err, res) => {
@@ -77,7 +83,7 @@ describe('Поиск пользователей', () => {
   test('----- неуспешный сценарий - отправили пустую строку ------', done => {
     request(app)
       .get(`${BASE_ROUTES.USER}${USER_ROUTES.SEARCH_USERS}?query=`)
-      .set('Cookie', [`token=${authTokens[REGISTER_SUCCESS_INPUT_DATA.email]}`])
+      .set('Cookie', getTokenForCookie({ registeredUsers, email: REGISTER_SUCCESS_INPUT_DATA.email }))
       .send()
       .expect(400)
       .end((err, res) => {
@@ -95,7 +101,7 @@ describe('Поиск пользователей', () => {
     request(app)
       .get(`${BASE_ROUTES.USER}${USER_ROUTES.SEARCH_USERS}?query=`)
       // НЕ ПЕРЕДАЕМ ТОКЕН
-      // .set('Cookie', [`token=${authTokens[REGISTER_SUCCESS_INPUT_DATA.email]}`])
+      // .set('Cookie', getTokenForCookie({ registeredUsers, email: REGISTER_SUCCESS_INPUT_DATA.email }))
       .send()
       .expect(403)
       .end((err, res) => {
