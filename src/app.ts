@@ -2,7 +2,7 @@ import { BASE_ROUTES } from '@/types/backendAndFrontendCommonTypes/routes';
 
 require('dotenv').config();
 import { connectToDB } from '@/config/database';
-import express from 'express';
+import express, { NextFunction, RequestHandler } from 'express';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import { verifyToken } from '@/middleware/auth';
@@ -56,11 +56,13 @@ const corsConfig = {
   credentials: true,
 };
 
-app.use(express.json());
-app.use(cors(corsConfig));
-app.use(cookieParser());
+app.use(express.json() as NextFunction);
+app.use(cors(corsConfig) as NextFunction);
+app.use(cookieParser() as NextFunction);
 app.use(BASE_ROUTES.USER, userRouter);
+// @ts-ignore
 app.use(BASE_ROUTES.MESSAGE, verifyToken, messageRouter);
+// @ts-ignore
 app.use(BASE_ROUTES.DIALOG, verifyToken, dialogRouter);
 
 app.get('/', function (request, response) {
