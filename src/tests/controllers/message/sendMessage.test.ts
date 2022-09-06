@@ -2,7 +2,7 @@ import request from 'supertest';
 import { app } from '../../../app';
 import { describe, test } from '@jest/globals';
 import { clearDB, connectToDB, disconnectFromDB } from '../../../config/database';
-import { getTokenForCookie, RegisteredUserForTest, registerUserForTest } from '../../helpers';
+import { getTokenForCookie, RegisteredUserForTest, registerUserForTest, SEND_MESSAGE_BODY_PARAMS_WITHOUT_DIALOG_ID } from '../../helpers';
 import { WebSocketModule } from '../../../utils/websocketModule';
 import { REGISTER_SUCCESS_INPUT_DATA, REGISTER_SUCCESS_INPUT_DATA2 } from '../../helpers';
 import { BASE_ROUTES, MESSAGE_ROUTES } from '../../../types/backendAndFrontendCommonTypes/routes';
@@ -13,12 +13,6 @@ import { Message } from '../../../model/message';
 import { ERROR_MESSAGES } from '../../../utils/errorMessages';
 
 let registeredUsers: Record<string, RegisteredUserForTest> = {};
-
-const SEND_MESSAGE_BODY_PARAMS_WITHOUT_DIALOG_ID: SendMessageBodyParams = {
-  message: 'hello!',
-  dialogId: undefined,
-  toUserId: '1',
-};
 
 const SEND_MESSAGE_BODY_PARAMS_WITH_DIALOG_ID: SendMessageBodyParams = {
   message: 'hello!',

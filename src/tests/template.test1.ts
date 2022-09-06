@@ -1,6 +1,6 @@
 import { clearDB, connectToDB, disconnectFromDB } from '../config/database';
 import { WebSocketModule } from '../utils/websocketModule';
-import { REGISTER_SUCCESS_INPUT_DATA, REGISTER_SUCCESS_INPUT_DATA2, registerUserForTest } from './helpers';
+import { getTokenForCookie, REGISTER_SUCCESS_INPUT_DATA, REGISTER_SUCCESS_INPUT_DATA2, registerUserForTest } from './helpers';
 import { describe } from '@jest/globals';
 import request from 'supertest';
 import { app } from '../app';
@@ -25,7 +25,7 @@ describe('Пример теста', () => {
   test('Выполняет поиск пользователей', done => {
     request(app)
       .get(`${BASE_ROUTES.USER}${USER_ROUTES.SEARCH_USERS}?query=${REGISTER_SUCCESS_INPUT_DATA.first_name}`)
-      .set('Cookie', [`token=${registeredUsers[REGISTER_SUCCESS_INPUT_DATA.email]}`])
+      .set('Cookie', getTokenForCookie({ registeredUsers, email: REGISTER_SUCCESS_INPUT_DATA.email }))
       .send()
       .expect(200)
       .end((err, res) => {

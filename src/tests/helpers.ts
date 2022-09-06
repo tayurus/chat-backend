@@ -1,7 +1,7 @@
 import request from 'supertest';
 import { app } from '../app';
-import { BASE_ROUTES, USER_ROUTES } from '../types/backendAndFrontendCommonTypes/routes';
-import { LoginUserBodyParams, RegisterUserBodyParams } from '../types/backendParams';
+import { BASE_ROUTES, MESSAGE_ROUTES, USER_ROUTES } from '../types/backendAndFrontendCommonTypes/routes';
+import { LoginUserBodyParams, RegisterUserBodyParams, SendMessageBodyParams } from '../types/backendParams';
 import setCookierParser from 'set-cookie-parser';
 import { RegisterUserSuccessResponse } from '../types/backendResponses';
 
@@ -20,6 +20,12 @@ export const LOGIN_SUCCESS_INPUT_DATA: LoginUserBodyParams = {
 
 export type RegisteredUserForTest = RegisterUserSuccessResponse & { token: string };
 
+export const SEND_MESSAGE_BODY_PARAMS_WITHOUT_DIALOG_ID: SendMessageBodyParams = {
+  message: 'hello!',
+  dialogId: undefined,
+  toUserId: '1',
+};
+
 export async function registerUserForTest(users = [REGISTER_SUCCESS_INPUT_DATA]) {
   const registeredUsers: Record<string, RegisteredUserForTest> = {};
   for (let i = 0; i < users.length; i++) {
@@ -36,6 +42,34 @@ export async function registerUserForTest(users = [REGISTER_SUCCESS_INPUT_DATA])
   }
 
   return registeredUsers;
+}
+
+export async function writeMessageForTest(params: {
+  fromUser: RegisteredUserForTest;
+  toUser: RegisteredUserForTest;
+  message: string;
+  dialogId?: string;
+}) {
+  const { fromUser, toUser, message, dialogId } = params;
+  const messageForSend: SendMessageBodyParams = {
+    message,
+    toUserId: toUser.id,
+    dialogId,
+  };
+  await request(app)
+    .post(`${BASE_ROUTES.MESSAGE}${MESSAGE_ROUTES.SEND}`)
+    .set('Cookie', getTokenForCookie({ registeredUsers: { [fromUser.email]: fromUser }, email: REGISTER_SUCCESS_INPUT_DATA.email }))
+    // отправляем сообщение
+    .send(messageForSend)
+    .expect(200)
+    .then(async function (res) {
+      return true;
+    })
+    .catch(err => {
+      if (err) {
+        console.log('writeMessageForTest err = ', err);
+      }
+    });
 }
 
 export function getTokenForCookie({ registeredUsers, email }: { registeredUsers: Record<string, RegisteredUserForTest>; email: string }) {
