@@ -3,11 +3,11 @@ const { compilerOptions } = require('./tsconfig.json');
 
 module.exports = {
   globals: {
-    'ts-jest': {
-      diagnostics: {
-        exclude: ['**'],
-      },
-    },
+    // 'ts-jest': {
+    //   diagnostics: {
+    //     exclude: ['**'],
+    //   },
+    // },
   },
   preset: 'ts-jest',
   testEnvironment: 'node',
