@@ -1,6 +1,6 @@
 import WebSocketServer, { WebSocket } from 'ws';
 // const websocketModule = new WebSocketServer.Server({ port: +process.env.WEBSOCKET_PORT });
-const websocketModule = new WebSocketServer.Server({ port: 8001 });
+const websocketModule = new WebSocketServer.Server({ port: 8005 });
 
 export const WebSocketModule: {
   server: WebSocketServer.Server<WebSocketServer.WebSocket>;

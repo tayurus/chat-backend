@@ -13,6 +13,7 @@ import { describe } from '@jest/globals';
 import request from 'supertest';
 import { app } from '../../../app';
 import { BASE_ROUTES, DIALOG_ROUTES } from '../../../types/backendAndFrontendCommonTypes/routes';
+import { GetDialogsSuccessResponse } from '../../../types/backendResponses';
 
 let registeredUsers: Record<string, RegisteredUserForTest> = {};
 
@@ -42,8 +43,10 @@ describe('Получение списка диалогов', () => {
           console.log('err = ', err);
         }
 
+        const resBody: GetDialogsSuccessResponse = res.body;
+
         //  должен быть один диалог
-        expect(res.body.length).toBe(0);
+        expect(resBody.length).toBe(0);
 
         done();
       });
@@ -65,18 +68,13 @@ describe('Получение списка диалогов', () => {
           if (err) {
             console.log('err = ', err);
           }
+          const resBody: GetDialogsSuccessResponse = res.body;
 
           // список диалогов должен быть пустым
-          expect(res.body.length).toBe(1);
+          expect(resBody.length).toBe(1);
 
           done();
         });
     });
   });
 });
-
-// успешный сценарий - диалоги есть
-// пишем одному человеку
-// запрашиваем список диалогов
-// должен быть один диалог
-// в его participants должнен быть данный пользователь, и тот, кому написали
