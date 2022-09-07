@@ -2,15 +2,17 @@ import request from 'supertest';
 import { app } from '../../../app';
 import { describe, test } from '@jest/globals';
 import { clearDB, connectToDB, disconnectFromDB } from '../../../config/database';
-import { getTokenForCookie, RegisteredUserForTest, registerUserForTest, SEND_MESSAGE_BODY_PARAMS_WITHOUT_DIALOG_ID } from '../../helpers';
 import { WebSocketModule } from '../../../utils/websocketModule';
-import { REGISTER_SUCCESS_INPUT_DATA, REGISTER_SUCCESS_INPUT_DATA2 } from '../../helpers';
 import { BASE_ROUTES, MESSAGE_ROUTES } from '../../../types/backendAndFrontendCommonTypes/routes';
 import { SendMessageBodyParams } from '../../../types/backendParams';
 import { SendMessageSuccessResponse } from '../../../types/backendResponses';
 import { Dialog } from '../../../model/dialog';
 import { Message } from '../../../model/message';
 import { ERROR_MESSAGES } from '../../../utils/errorMessages';
+import { RegisteredUserForTest } from '../../typesForTests';
+import { registerUserForTest } from '../../helpersForTests/registerUserForTest';
+import { REGISTER_SUCCESS_INPUT_DATA, REGISTER_SUCCESS_INPUT_DATA2, SEND_MESSAGE_BODY_PARAMS_WITHOUT_DIALOG_ID } from '../../constantsForTests';
+import { getTokenForCookieForTest } from '../../helpersForTests/getTokenForCookieForTest';
 
 let registeredUsers: Record<string, RegisteredUserForTest> = {};
 
@@ -22,8 +24,8 @@ const SEND_MESSAGE_BODY_PARAMS_WITH_DIALOG_ID: SendMessageBodyParams = {
 
 beforeAll(async () => await connectToDB());
 beforeEach(done => {
-  registerUserForTest([REGISTER_SUCCESS_INPUT_DATA, REGISTER_SUCCESS_INPUT_DATA2]).then(authTokensFromBackend => {
-    registeredUsers = Object.assign({}, authTokensFromBackend);
+  registerUserForTest([REGISTER_SUCCESS_INPUT_DATA, REGISTER_SUCCESS_INPUT_DATA2]).then(registeredUsersForTest => {
+    registeredUsers = Object.assign({}, registeredUsersForTest);
     SEND_MESSAGE_BODY_PARAMS_WITHOUT_DIALOG_ID.toUserId = registeredUsers[REGISTER_SUCCESS_INPUT_DATA2.email].id;
     WebSocketModule.server.close(() => done());
   });
@@ -37,7 +39,7 @@ describe('Отправка сообщения', () => {
   test('успешный сценарий - диалога еще нет', done => {
     request(app)
       .post(`${BASE_ROUTES.MESSAGE}${MESSAGE_ROUTES.SEND}`)
-      .set('Cookie', getTokenForCookie({ registeredUsers, email: REGISTER_SUCCESS_INPUT_DATA.email }))
+      .set('Cookie', getTokenForCookieForTest({ registeredUsers, email: REGISTER_SUCCESS_INPUT_DATA.email }))
       // отправляем сообщение
       .send(SEND_MESSAGE_BODY_PARAMS_WITHOUT_DIALOG_ID)
       .expect(200)
@@ -64,7 +66,7 @@ describe('Отправка сообщения', () => {
   test('успешный сценарий - диалог есть', done => {
     request(app)
       .post(`${BASE_ROUTES.MESSAGE}${MESSAGE_ROUTES.SEND}`)
-      .set('Cookie', getTokenForCookie({ registeredUsers, email: REGISTER_SUCCESS_INPUT_DATA.email }))
+      .set('Cookie', getTokenForCookieForTest({ registeredUsers, email: REGISTER_SUCCESS_INPUT_DATA.email }))
       // отправляем сообщение, чтобы создать диалог
       .send(SEND_MESSAGE_BODY_PARAMS_WITHOUT_DIALOG_ID)
       .expect(200)
@@ -79,7 +81,7 @@ describe('Отправка сообщения', () => {
         // отправляем еще одно сообщение в этот диалог
         request(app)
           .post(`${BASE_ROUTES.MESSAGE}${MESSAGE_ROUTES.SEND}`)
-          .set('Cookie', getTokenForCookie({ registeredUsers, email: REGISTER_SUCCESS_INPUT_DATA.email }))
+          .set('Cookie', getTokenForCookieForTest({ registeredUsers, email: REGISTER_SUCCESS_INPUT_DATA.email }))
           // отправляем сообщение, чтобы создать диалог
           .send(SEND_MESSAGE_BODY_PARAMS_WITH_DIALOG_ID)
           .expect(200)
@@ -105,7 +107,7 @@ describe('Отправка сообщения', () => {
   test('неуспешный сценарий - пустое сообщение (для нового диалога)', done => {
     request(app)
       .post(`${BASE_ROUTES.MESSAGE}${MESSAGE_ROUTES.SEND}`)
-      .set('Cookie', getTokenForCookie({ registeredUsers, email: REGISTER_SUCCESS_INPUT_DATA.email }))
+      .set('Cookie', getTokenForCookieForTest({ registeredUsers, email: REGISTER_SUCCESS_INPUT_DATA.email }))
       // отправляем сообщение
       .send({ ...SEND_MESSAGE_BODY_PARAMS_WITHOUT_DIALOG_ID, message: '' })
       .expect(400)
@@ -131,7 +133,7 @@ describe('Отправка сообщения', () => {
   test('неуспешный сценарий - получатель не найден', done => {
     request(app)
       .post(`${BASE_ROUTES.MESSAGE}${MESSAGE_ROUTES.SEND}`)
-      .set('Cookie', getTokenForCookie({ registeredUsers, email: REGISTER_SUCCESS_INPUT_DATA.email }))
+      .set('Cookie', getTokenForCookieForTest({ registeredUsers, email: REGISTER_SUCCESS_INPUT_DATA.email }))
       // // отправляем сообщение несуществующему получателю
       .send({ ...SEND_MESSAGE_BODY_PARAMS_WITHOUT_DIALOG_ID, toUserId: '1488228' })
       .expect(400)
@@ -157,7 +159,7 @@ describe('Отправка сообщения', () => {
   test('неуспешный сценарий - диалог не найден', done => {
     request(app)
       .post(`${BASE_ROUTES.MESSAGE}${MESSAGE_ROUTES.SEND}`)
-      .set('Cookie', getTokenForCookie({ registeredUsers, email: REGISTER_SUCCESS_INPUT_DATA.email }))
+      .set('Cookie', getTokenForCookieForTest({ registeredUsers, email: REGISTER_SUCCESS_INPUT_DATA.email }))
       // // отправляем сообщение несуществующему получателю
       .send({ ...SEND_MESSAGE_BODY_PARAMS_WITHOUT_DIALOG_ID, dialogId: '1488228' })
       .expect(400)

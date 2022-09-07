@@ -6,8 +6,9 @@ import { BASE_ROUTES, USER_ROUTES } from '../../../types/backendAndFrontendCommo
 import { RegisterUserBodyParams } from '../../../types/backendParams';
 import { ERROR_MESSAGES } from '../../../utils/errorMessages';
 import { User } from '../../../model/user';
-import { REGISTER_SUCCESS_INPUT_DATA } from '../../helpers';
 import { WebSocketModule } from '../../../utils/websocketModule';
+import { REGISTER_SUCCESS_INPUT_DATA } from '../../constantsForTests';
+import { responseHasTokenCookieForTest } from '../../helpersForTests/responseHasTokenCookieForTest';
 
 beforeAll(async () => await connectToDB());
 afterEach(done => {
@@ -45,7 +46,7 @@ describe('Регистрация', () => {
         expect(registeredUserInDb!._id.toString()).toBe(res.body.id);
 
         // проверить, что в куках пришел токен
-        expect(res.headers['set-cookie'][0].startsWith('token=')).toBe(true);
+        expect(responseHasTokenCookieForTest(res)).toBe(true);
 
         done();
       });

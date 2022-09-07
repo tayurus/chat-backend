@@ -5,8 +5,10 @@ import request from 'supertest';
 import { app } from '../../../app';
 import { BASE_ROUTES, USER_ROUTES } from '../../../types/backendAndFrontendCommonTypes/routes';
 import { ERROR_MESSAGES } from '../../../utils/errorMessages';
-import { LOGIN_SUCCESS_INPUT_DATA, REGISTER_SUCCESS_INPUT_DATA, registerUserForTest } from '../../helpers';
 import { WebSocketModule } from '../../../utils/websocketModule';
+import { registerUserForTest } from '../../helpersForTests/registerUserForTest';
+import { LOGIN_SUCCESS_INPUT_DATA, REGISTER_SUCCESS_INPUT_DATA } from '../../constantsForTests';
+import { responseHasTokenCookieForTest } from '../../helpersForTests/responseHasTokenCookieForTest';
 
 beforeAll(async () => await connectToDB());
 beforeEach(done => {
@@ -38,7 +40,7 @@ describe('Авторизация', () => {
         expect(res.body.id).not.toBe(undefined);
 
         // проверить, что в куках пришел токен
-        expect(res.headers['set-cookie'][0].startsWith('token=')).toBe(true);
+        expect(responseHasTokenCookieForTest(res)).toBe(true);
 
         done();
       });

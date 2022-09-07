@@ -1,19 +1,15 @@
 import { clearDB, connectToDB, disconnectFromDB } from '../../../config/database';
 import { WebSocketModule } from '../../../utils/websocketModule';
-import {
-  getTokenForCookie,
-  REGISTER_SUCCESS_INPUT_DATA,
-  REGISTER_SUCCESS_INPUT_DATA2,
-  RegisteredUserForTest,
-  registerUserForTest,
-  SEND_MESSAGE_BODY_PARAMS_WITHOUT_DIALOG_ID,
-  writeMessageForTest,
-} from '../../helpers';
 import { describe } from '@jest/globals';
 import request from 'supertest';
 import { app } from '../../../app';
 import { BASE_ROUTES, DIALOG_ROUTES } from '../../../types/backendAndFrontendCommonTypes/routes';
 import { GetDialogsSuccessResponse } from '../../../types/backendResponses';
+import { RegisteredUserForTest } from '../../typesForTests';
+import { registerUserForTest } from '../../helpersForTests/registerUserForTest';
+import { REGISTER_SUCCESS_INPUT_DATA, REGISTER_SUCCESS_INPUT_DATA2, SEND_MESSAGE_BODY_PARAMS_WITHOUT_DIALOG_ID } from '../../constantsForTests';
+import { getTokenForCookieForTest } from '../../helpersForTests/getTokenForCookieForTest';
+import { writeMessageForTest } from '../../helpersForTests/writeMessageForTest';
 
 let registeredUsers: Record<string, RegisteredUserForTest> = {};
 
@@ -35,7 +31,7 @@ describe('Получение списка диалогов', () => {
     request(app)
       // сразу запрашиваем список диалогов, никому ничего не написав
       .get(`${BASE_ROUTES.DIALOG}${DIALOG_ROUTES.GET_DIALOGS}`)
-      .set('Cookie', getTokenForCookie({ registeredUsers, email: REGISTER_SUCCESS_INPUT_DATA.email }))
+      .set('Cookie', getTokenForCookieForTest({ registeredUsers, email: REGISTER_SUCCESS_INPUT_DATA.email }))
       .send()
       .expect(200)
       .end((err, res) => {
@@ -61,7 +57,7 @@ describe('Получение списка диалогов', () => {
       request(app)
         // сразу запрашиваем список диалогов, никому ничего не написав
         .get(`${BASE_ROUTES.DIALOG}${DIALOG_ROUTES.GET_DIALOGS}`)
-        .set('Cookie', getTokenForCookie({ registeredUsers, email: REGISTER_SUCCESS_INPUT_DATA.email }))
+        .set('Cookie', getTokenForCookieForTest({ registeredUsers, email: REGISTER_SUCCESS_INPUT_DATA.email }))
         .send()
         .expect(200)
         .end((err, res) => {
