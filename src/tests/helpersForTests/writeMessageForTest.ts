@@ -11,7 +11,7 @@ export async function writeMessageForTest(params: {
   toUser: RegisteredUserForTest;
   message: string;
   dialogId?: string;
-}) {
+}): Promise<request.Response> {
   const { fromUser, toUser, message, dialogId } = params;
   const messageForSend: SendMessageBodyParams = {
     message,
@@ -25,11 +25,12 @@ export async function writeMessageForTest(params: {
     .send(messageForSend)
     .expect(200)
     .then(async function (res) {
-      return true;
+      return res;
     })
     .catch(err => {
       if (err) {
         console.log('writeMessageForTest err = ', err);
       }
+      return err;
     });
 }

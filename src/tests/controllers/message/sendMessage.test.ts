@@ -13,6 +13,7 @@ import { RegisteredUserForTest } from '../../typesForTests';
 import { registerUserForTest } from '../../helpersForTests/registerUserForTest';
 import { REGISTER_SUCCESS_INPUT_DATA, REGISTER_SUCCESS_INPUT_DATA2, SEND_MESSAGE_BODY_PARAMS_WITHOUT_DIALOG_ID } from '../../constantsForTests';
 import { getTokenForCookieForTest } from '../../helpersForTests/getTokenForCookieForTest';
+import { writeMessageForTest } from '../../helpersForTests/writeMessageForTest';
 
 let registeredUsers: Record<string, RegisteredUserForTest> = {};
 
@@ -37,30 +38,24 @@ afterAll(async () => {
 
 describe('Отправка сообщения', () => {
   test('успешный сценарий - диалога еще нет', done => {
-    request(app)
-      .post(`${BASE_ROUTES.MESSAGE}${MESSAGE_ROUTES.SEND}`)
-      .set('Cookie', getTokenForCookieForTest({ registeredUsers, email: REGISTER_SUCCESS_INPUT_DATA.email }))
-      // отправляем сообщение
-      .send(SEND_MESSAGE_BODY_PARAMS_WITHOUT_DIALOG_ID)
-      .expect(200)
-      .end(async function (err, res) {
-        if (err) {
-          console.log('err = ', err);
-        }
+    writeMessageForTest({
+      fromUser: registeredUsers[REGISTER_SUCCESS_INPUT_DATA.email],
+      message: SEND_MESSAGE_BODY_PARAMS_WITHOUT_DIALOG_ID.message,
+      toUser: registeredUsers[REGISTER_SUCCESS_INPUT_DATA2.email],
+    }).then(async res => {
+      const bodyResponse: SendMessageSuccessResponse = res.body;
+      // в ответ придет id диалога
+      expect(bodyResponse.dialogId).not.toBe(undefined);
+      // проверим, что в базе такой диалог есть
+      const createdDialog = await Dialog.findById(bodyResponse.dialogId);
+      expect(createdDialog!._id).not.toBe(undefined);
+      expect(createdDialog!.participants.length).toBe(2);
 
-        const bodyResponse: SendMessageSuccessResponse = res.body;
-        // в ответ придет id диалога
-        expect(bodyResponse.dialogId).not.toBe(undefined);
-        // проверим, что в базе такой диалог есть
-        const createdDialog = await Dialog.findById(bodyResponse.dialogId);
-        expect(createdDialog!._id).not.toBe(undefined);
-        expect(createdDialog!.participants.length).toBe(2);
-
-        // проверим, что в базе есть сообщение с таким dialogId
-        const createdMessage = await Message.find({ dialogId: createdDialog!._id });
-        expect(createdMessage[0].content).toBe(SEND_MESSAGE_BODY_PARAMS_WITHOUT_DIALOG_ID.message);
-        done();
-      });
+      // проверим, что в базе есть сообщение с таким dialogId
+      const createdMessage = await Message.find({ dialogId: createdDialog!._id });
+      expect(createdMessage[0].content).toBe(SEND_MESSAGE_BODY_PARAMS_WITHOUT_DIALOG_ID.message);
+      done();
+    });
   });
 
   test('успешный сценарий - диалог есть', done => {
