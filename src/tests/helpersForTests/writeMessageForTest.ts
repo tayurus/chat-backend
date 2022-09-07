@@ -18,7 +18,7 @@ export async function writeMessageForTest(params: {
     toUserId: toUser.id,
     dialogId,
   };
-  await request(app)
+  return await request(app)
     .post(`${BASE_ROUTES.MESSAGE}${MESSAGE_ROUTES.SEND}`)
     .set('Cookie', getTokenForCookieForTest({ registeredUsers: { [fromUser.email]: fromUser }, email: REGISTER_SUCCESS_INPUT_DATA.email }))
     // отправляем сообщение

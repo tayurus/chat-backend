@@ -1,17 +1,14 @@
 import { clearDB, connectToDB, disconnectFromDB } from '../../../config/database';
 import { WebSocketModule } from '../../../utils/websocketModule';
 import { describe } from '@jest/globals';
-import request from 'supertest';
-import { app } from '../../../app';
-import { BASE_ROUTES, DIALOG_ROUTES } from '../../../types/backendAndFrontendCommonTypes/routes';
 import { GetDialogsSuccessResponse } from '../../../types/backendResponses';
-import { RegisteredUserForTest } from '../../typesForTests';
 import { registerUserForTest } from '../../helpersForTests/registerUserForTest';
 import { REGISTER_SUCCESS_INPUT_DATA, REGISTER_SUCCESS_INPUT_DATA2, SEND_MESSAGE_BODY_PARAMS_WITHOUT_DIALOG_ID } from '../../constantsForTests';
-import { getTokenForCookieForTest } from '../../helpersForTests/getTokenForCookieForTest';
+import { RegisteredUsersForTest } from '../../helpersForTests/getTokenForCookieForTest';
 import { writeMessageForTest } from '../../helpersForTests/writeMessageForTest';
+import { getDialogsForTest } from '../../helpersForTests/getDialogsForTest';
 
-let registeredUsers: Record<string, RegisteredUserForTest> = {};
+let registeredUsers: RegisteredUsersForTest = {};
 
 beforeAll(async () => await connectToDB());
 beforeEach(done => {
@@ -28,49 +25,24 @@ afterAll(async () => {
 
 describe('Получение списка диалогов', () => {
   test('успешный сценарий - диалогов нет', done => {
-    request(app)
-      // сразу запрашиваем список диалогов, никому ничего не написав
-      .get(`${BASE_ROUTES.DIALOG}${DIALOG_ROUTES.GET_DIALOGS}`)
-      .set('Cookie', getTokenForCookieForTest({ registeredUsers, email: REGISTER_SUCCESS_INPUT_DATA.email }))
-      .send()
-      .expect(200)
-      .end((err, res) => {
-        if (err) {
-          console.log('err = ', err);
-        }
-
-        const resBody: GetDialogsSuccessResponse = res.body;
-
-        //  должен быть один диалог
-        expect(resBody.length).toBe(0);
-
-        done();
-      });
+    getDialogsForTest(registeredUsers).then(res => {
+      const resBody: GetDialogsSuccessResponse = res.body;
+      expect(resBody.length).toBe(0);
+      done();
+    });
   });
+});
 
-  test('успешный сценарий - диалоги есть', done => {
-    writeMessageForTest({
-      fromUser: registeredUsers[REGISTER_SUCCESS_INPUT_DATA.email],
-      toUser: registeredUsers[REGISTER_SUCCESS_INPUT_DATA2.email],
-      message: 'test',
-    }).then(() => {
-      request(app)
-        // сразу запрашиваем список диалогов, никому ничего не написав
-        .get(`${BASE_ROUTES.DIALOG}${DIALOG_ROUTES.GET_DIALOGS}`)
-        .set('Cookie', getTokenForCookieForTest({ registeredUsers, email: REGISTER_SUCCESS_INPUT_DATA.email }))
-        .send()
-        .expect(200)
-        .end((err, res) => {
-          if (err) {
-            console.log('err = ', err);
-          }
-          const resBody: GetDialogsSuccessResponse = res.body;
-
-          // список диалогов должен быть пустым
-          expect(resBody.length).toBe(1);
-
-          done();
-        });
+test('успешный сценарий - диалоги есть', done => {
+  writeMessageForTest({
+    fromUser: registeredUsers[REGISTER_SUCCESS_INPUT_DATA.email],
+    toUser: registeredUsers[REGISTER_SUCCESS_INPUT_DATA2.email],
+    message: 'test',
+  }).then(() => {
+    getDialogsForTest(registeredUsers).then(res => {
+      const resBody: GetDialogsSuccessResponse = res.body;
+      expect(resBody.length).toBe(1);
+      done();
     });
   });
 });
