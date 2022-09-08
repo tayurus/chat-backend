@@ -8,14 +8,14 @@ import { REGISTER_SUCCESS_INPUT_DATA } from '../constantsForTests';
 
 export async function writeMessageForTest(params: {
   fromUser: RegisteredUserForTest;
-  toUser: RegisteredUserForTest;
+  toUser?: RegisteredUserForTest;
   message: string;
   dialogId?: string;
 }): Promise<request.Response> {
   const { fromUser, toUser, message, dialogId } = params;
   const messageForSend: SendMessageBodyParams = {
     message,
-    toUserId: toUser.id,
+    toUserId: toUser?.id,
     dialogId,
   };
   return await request(app)

@@ -59,44 +59,34 @@ describe('Отправка сообщения', () => {
   });
 
   test('успешный сценарий - диалог есть', done => {
-    request(app)
-      .post(`${BASE_ROUTES.MESSAGE}${MESSAGE_ROUTES.SEND}`)
-      .set('Cookie', getTokenForCookieForTest({ registeredUsers, email: REGISTER_SUCCESS_INPUT_DATA.email }))
-      // отправляем сообщение, чтобы создать диалог
-      .send(SEND_MESSAGE_BODY_PARAMS_WITHOUT_DIALOG_ID)
-      .expect(200)
-      .end(async function (err, res) {
-        if (err) {
-          console.log('err = ', err);
-        }
+    writeMessageForTest({
+      fromUser: registeredUsers[REGISTER_SUCCESS_INPUT_DATA.email],
+      message: SEND_MESSAGE_BODY_PARAMS_WITHOUT_DIALOG_ID.message,
+      toUser: registeredUsers[REGISTER_SUCCESS_INPUT_DATA2.email],
+    }).then(async res => {
+      const bodyResponse: SendMessageSuccessResponse = res.body;
+      SEND_MESSAGE_BODY_PARAMS_WITH_DIALOG_ID.dialogId = bodyResponse.dialogId;
 
+      // отправляем еще одно сообщение в этот диалог
+      writeMessageForTest({
+        fromUser: registeredUsers[REGISTER_SUCCESS_INPUT_DATA.email],
+        message: SEND_MESSAGE_BODY_PARAMS_WITH_DIALOG_ID.message,
+        dialogId: SEND_MESSAGE_BODY_PARAMS_WITH_DIALOG_ID.dialogId,
+      }).then(async res => {
         const bodyResponse: SendMessageSuccessResponse = res.body;
-        SEND_MESSAGE_BODY_PARAMS_WITH_DIALOG_ID.dialogId = bodyResponse.dialogId;
+        // в ответ придет id диалога
+        expect(bodyResponse.dialogId).not.toBe(undefined);
+        // проверим, что в базе такой диалог есть
+        const createdDialog = await Dialog.findById(bodyResponse.dialogId);
+        expect(createdDialog!._id).not.toBe(undefined);
+        expect(createdDialog!.participants.length).toBe(2);
 
-        // отправляем еще одно сообщение в этот диалог
-        request(app)
-          .post(`${BASE_ROUTES.MESSAGE}${MESSAGE_ROUTES.SEND}`)
-          .set('Cookie', getTokenForCookieForTest({ registeredUsers, email: REGISTER_SUCCESS_INPUT_DATA.email }))
-          // отправляем сообщение, чтобы создать диалог
-          .send(SEND_MESSAGE_BODY_PARAMS_WITH_DIALOG_ID)
-          .expect(200)
-          .end(async function (err, res) {
-            if (err) {
-              console.log('err = ', err);
-            }
-            // в ответ придет id диалога
-            expect(bodyResponse.dialogId).not.toBe(undefined);
-            // проверим, что в базе такой диалог есть
-            const createdDialog = await Dialog.findById(bodyResponse.dialogId);
-            expect(createdDialog!._id).not.toBe(undefined);
-            expect(createdDialog!.participants.length).toBe(2);
-
-            // проверим, что в базе есть  2 сообщения с таким dialogId
-            const createdMessage = await Message.find({ dialogId: createdDialog!._id });
-            expect(createdMessage.length).toBe(2);
-            done();
-          });
+        // проверим, что в базе есть  2 сообщения с таким dialogId
+        const createdMessage = await Message.find({ dialogId: createdDialog!._id });
+        expect(createdMessage.length).toBe(2);
+        done();
       });
+    });
   });
 
   test('неуспешный сценарий - пустое сообщение (для нового диалога)', done => {
