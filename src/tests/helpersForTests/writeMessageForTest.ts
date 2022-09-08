@@ -11,8 +11,9 @@ export async function writeMessageForTest(params: {
   toUser?: RegisteredUserForTest;
   message: string;
   dialogId?: string;
+  expectedStatus?: number;
 }): Promise<request.Response> {
-  const { fromUser, toUser, message, dialogId } = params;
+  const { fromUser, toUser, message, dialogId, expectedStatus = 200 } = params;
   const messageForSend: SendMessageBodyParams = {
     message,
     toUserId: toUser?.id,
@@ -23,7 +24,7 @@ export async function writeMessageForTest(params: {
     .set('Cookie', getTokenForCookieForTest({ registeredUsers: { [fromUser.email]: fromUser }, email: REGISTER_SUCCESS_INPUT_DATA.email }))
     // отправляем сообщение
     .send(messageForSend)
-    .expect(200)
+    .expect(expectedStatus)
     .then(async function (res) {
       return res;
     })

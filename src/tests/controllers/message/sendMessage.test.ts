@@ -90,55 +90,46 @@ describe('Отправка сообщения', () => {
   });
 
   test('неуспешный сценарий - пустое сообщение (для нового диалога)', done => {
-    request(app)
-      .post(`${BASE_ROUTES.MESSAGE}${MESSAGE_ROUTES.SEND}`)
-      .set('Cookie', getTokenForCookieForTest({ registeredUsers, email: REGISTER_SUCCESS_INPUT_DATA.email }))
-      // отправляем сообщение
-      .send({ ...SEND_MESSAGE_BODY_PARAMS_WITHOUT_DIALOG_ID, message: '' })
-      .expect(400)
-      .end(async function (err, res) {
-        if (err) {
-          console.log('err = ', err);
-        }
+    writeMessageForTest({
+      fromUser: registeredUsers[REGISTER_SUCCESS_INPUT_DATA.email],
+      message: '',
+      toUser: registeredUsers[REGISTER_SUCCESS_INPUT_DATA2.email],
+      expectedStatus: 400,
+    }).then(async res => {
+      console.log('res = ', res);
+      // в ответ придет ошибка
+      expect(res.text).toBe(ERROR_MESSAGES.TEXT_MESSAGE_NOT_FOUND);
 
-        // в ответ придет ошибка
-        expect(res.text).toBe(ERROR_MESSAGES.TEXT_MESSAGE_NOT_FOUND);
+      // в базе нет диалогов
+      const dialogs = await Dialog.find({});
+      expect(dialogs.length).toBe(0);
 
-        // в базе нет диалогов
-        const dialogs = await Dialog.find({});
-        expect(dialogs.length).toBe(0);
-
-        // в базе нет сообщений
-        const messages = await Message.find({});
-        expect(messages.length).toBe(0);
-        done();
-      });
+      // в базе нет сообщений
+      const messages = await Message.find({});
+      expect(messages.length).toBe(0);
+      done();
+    });
   });
 
   test('неуспешный сценарий - получатель не найден', done => {
-    request(app)
-      .post(`${BASE_ROUTES.MESSAGE}${MESSAGE_ROUTES.SEND}`)
-      .set('Cookie', getTokenForCookieForTest({ registeredUsers, email: REGISTER_SUCCESS_INPUT_DATA.email }))
-      // // отправляем сообщение несуществующему получателю
-      .send({ ...SEND_MESSAGE_BODY_PARAMS_WITHOUT_DIALOG_ID, toUserId: '1488228' })
-      .expect(400)
-      .end(async function (err, res) {
-        if (err) {
-          console.log('err = ', err);
-        }
+    writeMessageForTest({
+      fromUser: registeredUsers[REGISTER_SUCCESS_INPUT_DATA.email],
+      message: SEND_MESSAGE_BODY_PARAMS_WITHOUT_DIALOG_ID.message,
+      toUser: { ...registeredUsers[REGISTER_SUCCESS_INPUT_DATA2.email], id: '1488228' },
+      expectedStatus: 400,
+    }).then(async res => {
+      // в ответ придет ошибка
+      expect(res.text).toBe(ERROR_MESSAGES.SEND_MESSAGE_ERROR);
 
-        // в ответ придет ошибка
-        expect(res.text).toBe(ERROR_MESSAGES.SEND_MESSAGE_ERROR);
+      // в базе нет диалогов
+      const dialogs = await Dialog.find({});
+      expect(dialogs.length).toBe(0);
 
-        // в базе нет диалогов
-        const dialogs = await Dialog.find({});
-        expect(dialogs.length).toBe(0);
-
-        // в базе нет сообщений
-        const messages = await Message.find({});
-        expect(messages.length).toBe(0);
-        done();
-      });
+      // в базе нет сообщений
+      const messages = await Message.find({});
+      expect(messages.length).toBe(0);
+      done();
+    });
   });
 
   test('неуспешный сценарий - диалог не найден', done => {
