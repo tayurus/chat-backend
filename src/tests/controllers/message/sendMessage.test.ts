@@ -1,9 +1,6 @@
-import request from 'supertest';
-import { app } from '../../../app';
 import { describe, test } from '@jest/globals';
 import { clearDB, connectToDB, disconnectFromDB } from '../../../config/database';
 import { WebSocketModule } from '../../../utils/websocketModule';
-import { BASE_ROUTES, MESSAGE_ROUTES } from '../../../types/backendAndFrontendCommonTypes/routes';
 import { SendMessageBodyParams } from '../../../types/backendParams';
 import { SendMessageSuccessResponse } from '../../../types/backendResponses';
 import { Dialog } from '../../../model/dialog';
@@ -12,7 +9,6 @@ import { ERROR_MESSAGES } from '../../../utils/errorMessages';
 import { RegisteredUserForTest } from '../../typesForTests';
 import { registerUserForTest } from '../../helpersForTests/registerUserForTest';
 import { REGISTER_SUCCESS_INPUT_DATA, REGISTER_SUCCESS_INPUT_DATA2, SEND_MESSAGE_BODY_PARAMS_WITHOUT_DIALOG_ID } from '../../constantsForTests';
-import { getTokenForCookieForTest } from '../../helpersForTests/getTokenForCookieForTest';
 import { writeMessageForTest } from '../../helpersForTests/writeMessageForTest';
 
 let registeredUsers: Record<string, RegisteredUserForTest> = {};
@@ -133,28 +129,24 @@ describe('Отправка сообщения', () => {
   });
 
   test('неуспешный сценарий - диалог не найден', done => {
-    request(app)
-      .post(`${BASE_ROUTES.MESSAGE}${MESSAGE_ROUTES.SEND}`)
-      .set('Cookie', getTokenForCookieForTest({ registeredUsers, email: REGISTER_SUCCESS_INPUT_DATA.email }))
-      // // отправляем сообщение несуществующему получателю
-      .send({ ...SEND_MESSAGE_BODY_PARAMS_WITHOUT_DIALOG_ID, dialogId: '1488228' })
-      .expect(400)
-      .end(async function (err, res) {
-        if (err) {
-          console.log('err = ', err);
-        }
+    writeMessageForTest({
+      fromUser: registeredUsers[REGISTER_SUCCESS_INPUT_DATA.email],
+      message: SEND_MESSAGE_BODY_PARAMS_WITHOUT_DIALOG_ID.message,
+      toUser: { ...registeredUsers[REGISTER_SUCCESS_INPUT_DATA2.email] },
+      dialogId: '1488228',
+      expectedStatus: 400,
+    }).then(async res => {
+      // в ответ придет ошибка
+      expect(res.text).toBe(ERROR_MESSAGES.SEND_MESSAGE_ERROR);
 
-        // в ответ придет ошибка
-        expect(res.text).toBe(ERROR_MESSAGES.SEND_MESSAGE_ERROR);
+      // в базе нет диалогов
+      const dialogs = await Dialog.find({});
+      expect(dialogs.length).toBe(0);
 
-        // в базе нет диалогов
-        const dialogs = await Dialog.find({});
-        expect(dialogs.length).toBe(0);
-
-        // в базе нет сообщений
-        const messages = await Message.find({});
-        expect(messages.length).toBe(0);
-        done();
-      });
+      // в базе нет сообщений
+      const messages = await Message.find({});
+      expect(messages.length).toBe(0);
+      done();
+    });
   });
 });
