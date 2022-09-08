@@ -12,9 +12,3 @@ export const LOGIN_SUCCESS_INPUT_DATA: LoginUserBodyParams = {
   email: REGISTER_SUCCESS_INPUT_DATA.email,
   password: REGISTER_SUCCESS_INPUT_DATA.password,
 };
-
-export const SEND_MESSAGE_BODY_PARAMS_WITHOUT_DIALOG_ID: SendMessageBodyParams = {
-  message: 'hello!',
-  dialogId: undefined,
-  toUserId: '1',
-};

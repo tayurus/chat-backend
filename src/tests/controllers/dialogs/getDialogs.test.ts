@@ -3,12 +3,19 @@ import { WebSocketModule } from '../../../utils/websocketModule';
 import { describe } from '@jest/globals';
 import { GetDialogsSuccessResponse } from '../../../types/backendResponses';
 import { registerUserForTest } from '../../helpersForTests/registerUserForTest';
-import { REGISTER_SUCCESS_INPUT_DATA, REGISTER_SUCCESS_INPUT_DATA2, SEND_MESSAGE_BODY_PARAMS_WITHOUT_DIALOG_ID } from '../../constantsForTests';
+import { REGISTER_SUCCESS_INPUT_DATA, REGISTER_SUCCESS_INPUT_DATA2 } from '../../constantsForTests';
 import { RegisteredUsersForTest } from '../../helpersForTests/getTokenForCookieForTest';
 import { writeMessageForTest } from '../../helpersForTests/writeMessageForTest';
 import { getDialogsForTest } from '../../helpersForTests/getDialogsForTest';
+import { SendMessageBodyParams } from '../../../types/backendParams';
 
 let registeredUsers: RegisteredUsersForTest = {};
+
+const SEND_MESSAGE_BODY_PARAMS_WITHOUT_DIALOG_ID: SendMessageBodyParams = {
+  message: 'hello!',
+  dialogId: undefined,
+  toUserId: '1',
+};
 
 beforeAll(async () => await connectToDB());
 beforeEach(done => {
