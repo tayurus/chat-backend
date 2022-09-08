@@ -25,7 +25,7 @@ afterAll(async () => {
 
 describe('Получение списка диалогов', () => {
   test('успешный сценарий - диалогов нет', done => {
-    getDialogsForTest(registeredUsers).then(res => {
+    getDialogsForTest({ registeredUsers }).then(res => {
       const resBody: GetDialogsSuccessResponse = res.body;
       expect(resBody.length).toBe(0);
       done();
@@ -39,7 +39,7 @@ test('успешный сценарий - диалоги есть', done => {
     toUser: registeredUsers[REGISTER_SUCCESS_INPUT_DATA2.email],
     message: 'test',
   }).then(() => {
-    getDialogsForTest(registeredUsers).then(res => {
+    getDialogsForTest({ registeredUsers }).then(res => {
       const resBody: GetDialogsSuccessResponse = res.body;
       expect(resBody.length).toBe(1);
       done();

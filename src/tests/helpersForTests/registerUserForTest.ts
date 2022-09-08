@@ -11,6 +11,7 @@ export async function registerUserForTest(users = [REGISTER_SUCCESS_INPUT_DATA])
     await request(app)
       .post(`${BASE_ROUTES.USER}${USER_ROUTES.REGISTER}`)
       .send(users[i])
+      .expect(200)
       .then(function (res) {
         registeredUsers[users[i].email] = Object.assign({}, res.body);
         registeredUsers[users[i].email]['token'] = setCookierParser.parse(res.headers['set-cookie'][0])[0].value;

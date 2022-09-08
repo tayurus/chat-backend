@@ -9,14 +9,18 @@ import { REGISTER_SUCCESS_INPUT_DATA } from '../constantsForTests';
  * @param registeredUsers - список уже зареганных пользователей
  * @return - список диалогов
  * */
-export async function getDialogsForTest(registeredUsers: RegisteredUsersForTest): Promise<request.Response> {
+export async function getDialogsForTest(params: {
+  registeredUsers: RegisteredUsersForTest;
+  expectedStatus?: request.Response['status'];
+}): Promise<request.Response> {
+  const { registeredUsers, expectedStatus = 200 } = params;
   return (
     request(app)
       // сразу запрашиваем список диалогов, никому ничего не написав
       .get(`${BASE_ROUTES.DIALOG}${DIALOG_ROUTES.GET_DIALOGS}`)
       .set('Cookie', getTokenForCookieForTest({ registeredUsers, email: REGISTER_SUCCESS_INPUT_DATA.email }))
       .send()
-      .expect(200)
+      .expect(expectedStatus)
       .then(res => {
         return res;
       })
