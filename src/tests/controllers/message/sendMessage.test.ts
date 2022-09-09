@@ -8,12 +8,18 @@ import { Message } from '../../../model/message';
 import { ERROR_MESSAGES } from '../../../utils/errorMessages';
 import { RegisteredUserForTest } from '../../typesForTests';
 import { registerUserForTest } from '../../helpersForTests/registerUserForTest';
-import { REGISTER_SUCCESS_INPUT_DATA, REGISTER_SUCCESS_INPUT_DATA2, SEND_MESSAGE_BODY_PARAMS_WITHOUT_DIALOG_ID } from '../../constantsForTests';
+import { REGISTER_SUCCESS_INPUT_DATA, REGISTER_SUCCESS_INPUT_DATA2 } from '../../constantsForTests';
 import { writeMessageForTest } from '../../helpersForTests/writeMessageForTest';
 
 let registeredUsers: Record<string, RegisteredUserForTest> = {};
 
 const SEND_MESSAGE_BODY_PARAMS_WITH_DIALOG_ID: SendMessageBodyParams = {
+  message: 'hello!',
+  dialogId: undefined,
+  toUserId: '1',
+};
+
+const SEND_MESSAGE_BODY_PARAMS_WITHOUT_DIALOG_ID: SendMessageBodyParams = {
   message: 'hello!',
   dialogId: undefined,
   toUserId: '1',
@@ -92,7 +98,6 @@ describe('Отправка сообщения', () => {
       toUser: registeredUsers[REGISTER_SUCCESS_INPUT_DATA2.email],
       expectedStatus: 400,
     }).then(async res => {
-      console.log('res = ', res);
       // в ответ придет ошибка
       expect(res.text).toBe(ERROR_MESSAGES.TEXT_MESSAGE_NOT_FOUND);
 

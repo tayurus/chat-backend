@@ -1,14 +1,22 @@
 import { clearDB, connectToDB, disconnectFromDB } from '../../../config/database';
 import { registerUserForTest } from '../../helpersForTests/registerUserForTest';
-import { REGISTER_SUCCESS_INPUT_DATA, REGISTER_SUCCESS_INPUT_DATA2, SEND_MESSAGE_BODY_PARAMS_WITHOUT_DIALOG_ID } from '../../constantsForTests';
+import { REGISTER_SUCCESS_INPUT_DATA, REGISTER_SUCCESS_INPUT_DATA2 } from '../../constantsForTests';
 import { WebSocketModule } from '../../../utils/websocketModule';
 import { RegisteredUsersForTest } from '../../helpersForTests/getTokenForCookieForTest';
 import { describe } from '@jest/globals';
 import { writeMessageForTest } from '../../helpersForTests/writeMessageForTest';
-import { SendMessageSuccessResponse } from '../../../types/backendResponses';
+import { GetDialogSuccessResponse, SendMessageSuccessResponse } from '../../../types/backendResponses';
+import { getDialogForTest } from '../../helpersForTests/getDialogForTest';
 import { SendMessageBodyParams } from '../../../types/backendParams';
+import { ERROR_MESSAGES } from '../../../utils/errorMessages';
 
 let registeredUsers: RegisteredUsersForTest = {};
+
+const SEND_MESSAGE_BODY_PARAMS_WITHOUT_DIALOG_ID: SendMessageBodyParams = {
+  message: 'hello!',
+  dialogId: undefined,
+  toUserId: '1',
+};
 
 beforeAll(async () => await connectToDB());
 beforeEach(done => {
@@ -39,23 +47,52 @@ describe('Получение диалога по id', () => {
       dialogId = bodyResponse.dialogId;
 
       // и еще одно
-      writeMessageForTest({
+      const writeMessageRes = await writeMessageForTest({
         fromUser: registeredUsers[REGISTER_SUCCESS_INPUT_DATA.email],
         message: SECOND_MESSAGE_TEXT,
         dialogId,
-      }).then(async res => {});
+      });
+
+      const writeMessageResBody: SendMessageSuccessResponse = writeMessageRes.body;
+
+      // запрашиваем диалог с этим кеком с отступом 0 и кол-вом 1
+      const getDialogRes = await getDialogForTest({
+        registeredUsers,
+        expectedStatus: 200,
+        requestUrlParams: { dialogId: writeMessageResBody.dialogId },
+        requestQueryParams: { limit: '1', offset: '0' },
+      });
+
+      const getDialogResBody: GetDialogSuccessResponse = getDialogRes.body;
+      // должно придти первое сообщение
+      expect(getDialogResBody.messages.length).toBe(1);
+      expect(getDialogResBody.messages[0].content).toBe(FIRST_MESSAGE_TEXT);
+      // запрашиваем диалог с этим кеком уже с отступом 1 и кол-вом 1
+      const getDialogResSecond = await getDialogForTest({
+        registeredUsers,
+        expectedStatus: 200,
+        requestUrlParams: { dialogId: writeMessageResBody.dialogId },
+        requestQueryParams: { limit: '1', offset: '1' },
+      });
+      const getDialogResBodySecond: GetDialogSuccessResponse = getDialogResSecond.body;
+      // должно придти второе сообщение
+      expect(getDialogResBodySecond.messages.length).toBe(1);
+      expect(getDialogResBodySecond.messages[0].content).toBe(SECOND_MESSAGE_TEXT);
+
+      done();
+    });
+  });
+
+  test('неуспешный сценарий - диалога нет', done => {
+    getDialogForTest({
+      registeredUsers,
+      expectedStatus: 400,
+      requestUrlParams: { dialogId: '1488228' },
+      requestQueryParams: { limit: '1', offset: '0' },
+    }).then(getDialogRes => {
+      expect(getDialogRes.text).toBe(ERROR_MESSAGES.INVALID_DATA);
+
+      done();
     });
   });
 });
-
-// успешный сценарий - диалог есть
-// пишем сообщение
-// и еще одно
-// запрашиваем диалог с этим кеком с отступом 0 и кол-вом 1
-// должно придти первое сообщение
-// запрашиваем диалог с этим кеком уже с отступом 1 и кол-вом 1
-// должно придти второе сообщение
-
-// неуспешный сценарий - диалога нет
-// запрашиваем несуществующий диалог
-// придет ошибка

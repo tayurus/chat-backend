@@ -9,13 +9,14 @@ import { getAllDialogParticipantsExceptCurrentUser } from '@utils/dialog';
 import { User } from '@/model/user';
 import { extractUserInfoFromDbEntity } from '@utils/user';
 import { WebSocketModule } from '@utils/websocketModule';
+import mongoose from 'mongoose';
 
 export const getDialog = async (req: TypedRequestBody<{}, GetDialogQueryParams, GetDialogUrlParams>, res: TypedResponse<GetDialogResponse>) => {
   // достаем id диалога, сдвиг и кол-во соообщений из query
   const { offset, limit } = req.query;
   const { dialogId } = req.params;
 
-  if (!dialogId || !offset || !limit || isNaN(+offset) || isNaN(+limit)) {
+  if (!dialogId || !offset || !limit || isNaN(+offset) || isNaN(+limit) || !mongoose.Types.ObjectId.isValid(dialogId)) {
     return res.status(400).send(ERROR_MESSAGES.INVALID_DATA);
   }
 

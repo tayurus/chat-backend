@@ -102,7 +102,7 @@ export const sendMessage = async (req: TypedRequestBody<SendMessageBodyParams>, 
 
     session.endSession();
   } catch (e) {
-    console.error(`ERROR_MESSAGES.SEND_MESSAGE_ERROR - `, e);
+    // console.error(`ERROR_MESSAGES.SEND_MESSAGE_ERROR - `, e);
     return res.status(400).send(ERROR_MESSAGES.SEND_MESSAGE_ERROR);
   }
 };
