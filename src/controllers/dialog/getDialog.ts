@@ -1,14 +1,14 @@
-import { TypedRequestBody, TypedResponse } from '@/types/express';
-import { GetDialogQueryParams, GetDialogUrlParams } from '@/types/backendParams';
-import { Message } from '@/model/message';
-import { ERROR_MESSAGES } from '@utils/errorMessages';
-import { FoundedMessage, GetDialogResponse, UserInfoInDialog } from '@/types/backendResponses';
-import { normalizeMessage } from '@utils/message';
-import { Dialog } from '@/model/dialog';
-import { getAllDialogParticipantsExceptCurrentUser } from '@utils/dialog';
-import { User } from '@/model/user';
-import { extractUserInfoFromDbEntity } from '@utils/user';
-import { WebSocketModule } from '@utils/websocketModule';
+import { TypedRequestBody, TypedResponse } from 'src/types/express';
+import { GetDialogQueryParams, GetDialogUrlParams } from 'src/types/backendParams';
+import { Message } from 'src/model/message';
+import { ERROR_MESSAGES } from 'src/utils/errorMessages';
+import { FoundedMessage, GetDialogResponse, UserInfoInDialog } from 'src/types/backendResponses';
+import { normalizeMessage } from 'src/utils/message';
+import { Dialog } from 'src/model/dialog';
+import { getAllDialogParticipantsExceptCurrentUser } from 'src/utils/dialog';
+import { User } from 'src/model/user';
+import { extractUserInfoFromDbEntity } from 'src/utils/user';
+import { WebSocketModule } from 'src/utils/websocketModule';
 import mongoose from 'mongoose';
 
 export const getDialog = async (req: TypedRequestBody<{}, GetDialogQueryParams, GetDialogUrlParams>, res: TypedResponse<GetDialogResponse>) => {

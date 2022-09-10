@@ -1,4 +1,4 @@
-import { UserTyping } from '@/types/backendAndFrontendCommonTypes/userTyping';
+import { UserTyping } from 'src/types/backendAndFrontendCommonTypes/userTyping';
 
 export enum WebSocketsEvents {
   NEW_MESSAGE = 'NEW_MESSAGE',

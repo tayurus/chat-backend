@@ -1,13 +1,13 @@
-import { Dialog } from '@/model/dialog';
-import { User } from '@/model/user';
-import { Message } from '@/model/message';
-import { GetDialogsResponse } from '@/types/backendResponses';
-import { TypedRequestBody, TypedResponse } from '@/types/express';
-import { GetDialogsParams } from '@/types/backendParams';
-import { ERROR_MESSAGES } from '@utils/errorMessages';
-import { normalizeMessage } from '@utils/message';
-import { extractUserInfoFromDbEntity } from '@utils/user';
-import { WebSocketModule } from '@utils/websocketModule';
+import { Dialog } from 'src/model/dialog';
+import { User } from 'src/model/user';
+import { Message } from 'src/model/message';
+import { GetDialogsResponse } from 'src/types/backendResponses';
+import { TypedRequestBody, TypedResponse } from 'src/types/express';
+import { GetDialogsParams } from 'src/types/backendParams';
+import { ERROR_MESSAGES } from 'src/utils/errorMessages';
+import { normalizeMessage } from 'src/utils/message';
+import { extractUserInfoFromDbEntity } from 'src/utils/user';
+import { WebSocketModule } from 'src/utils/websocketModule';
 
 export const getDialogs = async (req: TypedRequestBody<GetDialogsParams>, res: TypedResponse<GetDialogsResponse>) => {
   // @ts-ignore

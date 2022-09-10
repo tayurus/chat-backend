@@ -1,10 +1,10 @@
-import { User } from '@/model/user';
-import { TypedRequestBody, TypedResponse } from '@/types/express';
-import { RegisterUserBodyParams } from '@/types/backendParams';
-import { RegisterUserResponse } from '@/types/backendResponses';
+import { User } from 'src/model/user';
+import { TypedRequestBody, TypedResponse } from 'src/types/express';
+import { RegisterUserBodyParams } from 'src/types/backendParams';
+import { RegisterUserResponse } from 'src/types/backendResponses';
 import { hash } from 'bcryptjs';
-import { ERROR_MESSAGES } from '@utils/errorMessages';
-import { signUser } from '@utils/user';
+import { ERROR_MESSAGES } from 'src/utils/errorMessages';
+import { signUser } from 'src/utils/user';
 
 export const registerUser = async (req: TypedRequestBody<RegisterUserBodyParams>, res: TypedResponse<RegisterUserResponse | string>) => {
   // Our register logic starts here

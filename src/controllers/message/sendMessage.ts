@@ -1,15 +1,15 @@
-import { Dialog } from '@/model/dialog';
-import { User } from '@/model/user';
-import { Message } from '@/model/message';
-import { TypedRequestBody, TypedResponse } from '@/types/express';
-import { SendMessageBodyParams } from '@/types/backendParams';
-import { FoundedMessage, SendMessageResponse, WebSocketMessage, WsNewMessageResponse } from '@/types/backendResponses';
-import { ERROR_MESSAGES } from '@utils/errorMessages';
-import { WebSocketModule } from '@utils/websocketModule';
-import { WebSocketsEvents } from '@/types/backendResponses';
-import { normalizeMessage } from '@utils/message';
-import { extractUserInfoFromDbEntity } from '@utils/user';
-import { dbConnection } from '@/config/database';
+import { Dialog } from 'src/model/dialog';
+import { User } from 'src/model/user';
+import { Message } from 'src/model/message';
+import { TypedRequestBody, TypedResponse } from 'src/types/express';
+import { SendMessageBodyParams } from 'src/types/backendParams';
+import { FoundedMessage, SendMessageResponse, WebSocketMessage, WsNewMessageResponse } from 'src/types/backendResponses';
+import { ERROR_MESSAGES } from 'src/utils/errorMessages';
+import { WebSocketModule } from 'src/utils/websocketModule';
+import { WebSocketsEvents } from 'src/types/backendResponses';
+import { normalizeMessage } from 'src/utils/message';
+import { extractUserInfoFromDbEntity } from 'src/utils/user';
+import { dbConnection } from 'src/config/database';
 
 export const sendMessage = async (req: TypedRequestBody<SendMessageBodyParams>, res: TypedResponse<SendMessageResponse>) => {
   try {

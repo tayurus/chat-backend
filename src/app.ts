@@ -1,22 +1,22 @@
-import { BASE_ROUTES } from '@/types/backendAndFrontendCommonTypes/routes';
+import { BASE_ROUTES } from 'src/types/backendAndFrontendCommonTypes/routes';
 
 require('dotenv').config();
-import { connectToDB } from '@/config/database';
+import { connectToDB } from 'src/config/database';
 import express, { NextFunction, RequestHandler } from 'express';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
-import { verifyToken } from '@/middleware/auth';
-import { userRouter } from '@routes/user.router';
-import { messageRouter } from '@routes/message.router';
-import { dialogRouter } from '@routes/dialog.router';
-import { WebSocketModule } from '@utils/websocketModule';
+import { verifyToken } from 'src/middleware/auth';
+import { userRouter } from 'src/routes/user.router';
+import { messageRouter } from 'src/routes/message.router';
+import { dialogRouter } from 'src/routes/dialog.router';
+import { WebSocketModule } from 'src/utils/websocketModule';
 import {
   notifyThatUserTypingToDialogParticipants,
   notifyThatUserUpdatedToAllHisDialogsParticipants,
   startPingPongPoolingForUserOnlineStatus,
-} from '@utils/user';
-import { WebSocketMessage, WebSocketsEvents } from '@/types/backendResponses';
-import { WsUserTypingParams } from '@/types/backendParams';
+} from 'src/utils/user';
+import { WebSocketMessage, WebSocketsEvents } from 'src/types/backendResponses';
+import { WsUserTypingParams } from 'src/types/backendParams';
 
 connectToDB();
 

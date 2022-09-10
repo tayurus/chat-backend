@@ -1,10 +1,10 @@
-import { User } from '@/model/user';
+import { User } from 'src/model/user';
 import { compare } from 'bcryptjs';
-import { TypedRequestBody, TypedResponse } from '@/types/express';
-import { LoginUserBodyParams } from '@/types/backendParams';
-import { ERROR_MESSAGES } from '@utils/errorMessages';
-import { LoginUserResponse } from '@/types/backendResponses';
-import { signUser } from '@utils/user';
+import { TypedRequestBody, TypedResponse } from 'src/types/express';
+import { LoginUserBodyParams } from 'src/types/backendParams';
+import { ERROR_MESSAGES } from 'src/utils/errorMessages';
+import { LoginUserResponse } from 'src/types/backendResponses';
+import { signUser } from 'src/utils/user';
 
 export const loginUser = async (req: TypedRequestBody<LoginUserBodyParams>, res: TypedResponse<LoginUserResponse>) => {
   try {

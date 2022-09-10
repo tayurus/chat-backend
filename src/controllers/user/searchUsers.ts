@@ -1,10 +1,10 @@
-import { TypedRequestBody, TypedResponse } from '@/types/express';
-import { ERROR_MESSAGES } from '@utils/errorMessages';
-import { User, UserType } from '@/model/user';
-import { SearchUsersQueryParams } from '@/types/backendParams';
-import { searchByFields } from '@utils/search';
-import { SearchUsersResponse } from '@/types/backendResponses';
-import { normalizeFoundedUser } from '@utils/user';
+import { TypedRequestBody, TypedResponse } from 'src/types/express';
+import { ERROR_MESSAGES } from 'src/utils/errorMessages';
+import { User, UserType } from 'src/model/user';
+import { SearchUsersQueryParams } from 'src/types/backendParams';
+import { searchByFields } from 'src/utils/search';
+import { SearchUsersResponse } from 'src/types/backendResponses';
+import { normalizeFoundedUser } from 'src/utils/user';
 
 export const searchUsers = async (req: TypedRequestBody<{}, SearchUsersQueryParams>, res: TypedResponse<SearchUsersResponse>) => {
   const {

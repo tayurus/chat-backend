@@ -22,21 +22,21 @@
     "importHelpers": true,
     "baseUrl": "src",
     "paths": {
-      "@/*": ["*"],
-      "@config": ["config"],
-      "@controllers/*": ["controllers/*"],
-      "@databases": ["databases"],
-      "@dtos/*": ["dtos/*"],
-      "@exceptions/*": ["exceptions/*"],
-      "@interfaces/*": ["interfaces/*"],
-      "@middlewares/*": ["middlewares/*"],
-      "@models/*": ["models/*"],
-      "@routes/*": ["routes/*"],
-      "@services/*": ["services/*"],
-      "@utils/*": ["utils/*"],
-      "@tests/*": ["tests/*"]
+      "src/*": ["*"],
+      "src/config": ["config"],
+      "src/controllers/*": ["controllers/*"],
+      "src/databases": ["databases"],
+      "src/dtos/*": ["dtos/*"],
+      "src/exceptions/*": ["exceptions/*"],
+      "src/interfaces/*": ["interfaces/*"],
+      "src/middlewares/*": ["middlewares/*"],
+      "src/models/*": ["models/*"],
+      "src/routes/*": ["routes/*"],
+      "src/services/*": ["services/*"],
+      "src/utils/*": ["utils/*"],
+      "src/tests/*": ["tests/*"]
     }
-   },
+  },
   "include": ["src/**/*.ts", "src/**/*.json", ".env"],
-  "exclude": ["node_modules", "src/http", "src/logs", "src/tests"]
+  "exclude": ["node_modules", "src/http", "src/logs"]
 }

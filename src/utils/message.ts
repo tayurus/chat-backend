@@ -1,5 +1,5 @@
-import { MessageType } from '@/model/message';
-import { FoundedMessage } from '@/types/backendResponses';
+import { MessageType } from 'src/model/message';
+import { FoundedMessage } from 'src/types/backendResponses';
 import Mongoose from 'mongoose';
 
 export function normalizeMessage(

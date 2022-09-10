@@ -1,4 +1,4 @@
-import { UserTyping } from '@/types/backendAndFrontendCommonTypes/userTyping';
+import { UserTyping } from 'src/types/backendAndFrontendCommonTypes/userTyping';
 
 export type GetDialogsParams = {};
 

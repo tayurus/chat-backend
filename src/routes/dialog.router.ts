@@ -1,8 +1,8 @@
 import express from 'express';
-import { getDialogs } from '@controllers/dialog/getDialogs';
-import { getDialog } from '@controllers/dialog/getDialog';
-import { DIALOG_ROUTES } from '@/types/backendAndFrontendCommonTypes/routes';
-import { verifyToken } from '@/middleware/auth';
+import { getDialogs } from 'src/controllers/dialog/getDialogs';
+import { getDialog } from 'src/controllers/dialog/getDialog';
+import { DIALOG_ROUTES } from 'src/types/backendAndFrontendCommonTypes/routes';
+import { verifyToken } from 'src/middleware/auth';
 
 const dialogRouter = express.Router();
 // @ts-ignore

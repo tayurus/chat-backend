@@ -1,7 +1,7 @@
-import { TypedRequestBody, TypedResponse } from '@/types/express';
-import { WhoAmIResponse } from '@/types/backendResponses';
-import { User } from '@/model/user';
-import { ERROR_MESSAGES } from '@utils/errorMessages';
+import { TypedRequestBody, TypedResponse } from 'src/types/express';
+import { WhoAmIResponse } from 'src/types/backendResponses';
+import { User } from 'src/model/user';
+import { ERROR_MESSAGES } from 'src/utils/errorMessages';
 
 export const whoAmI = async (req: TypedRequestBody, res: TypedResponse<WhoAmIResponse>) => {
   try {

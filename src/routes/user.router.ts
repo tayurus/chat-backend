@@ -1,10 +1,10 @@
 import express from 'express';
-import { registerUser } from '@/controllers/user/registerUser';
-import { loginUser } from '@/controllers/user/loginUser';
-import { searchUsers } from '@controllers/user/searchUsers';
-import { whoAmI } from '@controllers/user/whoAmI';
-import { verifyToken } from '@/middleware/auth';
-import { USER_ROUTES } from '@/types/backendAndFrontendCommonTypes/routes';
+import { registerUser } from 'src/controllers/user/registerUser';
+import { loginUser } from 'src/controllers/user/loginUser';
+import { searchUsers } from 'src/controllers/user/searchUsers';
+import { whoAmI } from 'src/controllers/user/whoAmI';
+import { verifyToken } from 'src/middleware/auth';
+import { USER_ROUTES } from 'src/types/backendAndFrontendCommonTypes/routes';
 
 const userRouter = express.Router();
 

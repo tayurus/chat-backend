@@ -1,7 +1,7 @@
 import { verify } from 'jsonwebtoken';
 import { NextFunction } from 'express';
-import { TypedRequestBody, TypedResponse } from '@/types/express';
-import { ERROR_MESSAGES } from '@utils/errorMessages';
+import { TypedRequestBody, TypedResponse } from 'src/types/express';
+import { ERROR_MESSAGES } from 'src/utils/errorMessages';
 
 const config = process.env;
 

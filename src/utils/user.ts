@@ -1,8 +1,8 @@
 import Mongoose from 'mongoose';
-import { UserType } from '@/model/user';
+import { UserType } from 'src/model/user';
 import jwt from 'jsonwebtoken';
-import { Dialog } from '@/model/dialog';
-import { WebSocketModule } from '@utils/websocketModule';
+import { Dialog } from 'src/model/dialog';
+import { WebSocketModule } from 'src/utils/websocketModule';
 import {
   FoundedUser,
   UserInfoInDialog,
@@ -10,11 +10,11 @@ import {
   WebSocketsEvents,
   WsUserTypingResponse,
   WsUserUpdatedResponse,
-} from '@/types/backendResponses';
+} from 'src/types/backendResponses';
 import WebSocket from 'ws';
-import { PING_PONG_DATA, PING_PONG_WAIT_TIMEOUT } from '@utils/webSocketsConstants';
-import { WsUserTypingParams } from '@/types/backendParams';
-import { getAllDialogParticipantsExceptCurrentUser } from '@utils/dialog';
+import { PING_PONG_DATA, PING_PONG_WAIT_TIMEOUT } from 'src/utils/webSocketsConstants';
+import { WsUserTypingParams } from 'src/types/backendParams';
+import { getAllDialogParticipantsExceptCurrentUser } from 'src/utils/dialog';
 
 /**
  * авторизовывает пользователя
