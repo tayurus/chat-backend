@@ -1,3 +1,3 @@
-import { RegisterUserSuccessResponse } from '../types/backendResponses';
+import { RegisterUserSuccessResponse } from 'src/types/backendResponses';
 
 export type RegisteredUserForTest = RegisterUserSuccessResponse & { token: string };

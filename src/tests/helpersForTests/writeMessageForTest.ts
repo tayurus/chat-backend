@@ -1,10 +1,10 @@
-import { SendMessageBodyParams } from '../../types/backendParams';
+import { SendMessageBodyParams } from 'src/types/backendParams';
 import request from 'supertest';
-import { app } from '../../app';
-import { BASE_ROUTES, MESSAGE_ROUTES } from '../../types/backendAndFrontendCommonTypes/routes';
+import { app } from 'src/app';
+import { BASE_ROUTES, MESSAGE_ROUTES } from 'src/types/backendAndFrontendCommonTypes/routes';
 import { getTokenForCookieForTest } from './getTokenForCookieForTest';
-import { RegisteredUserForTest } from '../typesForTests';
-import { REGISTER_SUCCESS_INPUT_DATA } from '../constantsForTests';
+import { RegisteredUserForTest } from 'src/tests/typesForTests';
+import { REGISTER_SUCCESS_INPUT_DATA } from 'src/tests/constantsForTests';
 
 export async function writeMessageForTest(params: {
   fromUser: RegisteredUserForTest;

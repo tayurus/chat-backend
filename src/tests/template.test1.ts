@@ -1,11 +1,16 @@
 import { clearDB, connectToDB, disconnectFromDB } from '../config/database';
 import { WebSocketModule } from '../utils/websocketModule';
-import { getTokenForCookie, REGISTER_SUCCESS_INPUT_DATA, REGISTER_SUCCESS_INPUT_DATA2, registerUserForTest } from './helpers';
+import {
+  getTokenForCookie,
+  REGISTER_SUCCESS_INPUT_DATA,
+  REGISTER_SUCCESS_INPUT_DATA2,
+  registerUserForTest,
+} from 'src/tests/helpersForTests/registerUserForTest';
 import { describe } from '@jest/globals';
 import request from 'supertest';
 import { app } from '../app';
 import { BASE_ROUTES, USER_ROUTES } from '../types/backendAndFrontendCommonTypes/routes';
-import { RegisteredUserForTest } from './helpers';
+import { RegisteredUserForTest } from 'src/tests/typesForTests';
 
 let registeredUsers: Record<string, RegisteredUserForTest> = {};
 

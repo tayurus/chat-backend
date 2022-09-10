@@ -1,9 +1,9 @@
 import request from 'supertest';
-import { app } from '../../app';
-import { BASE_ROUTES, USER_ROUTES } from '../../types/backendAndFrontendCommonTypes/routes';
+import { app } from 'src/app';
+import { BASE_ROUTES, USER_ROUTES } from 'src/types/backendAndFrontendCommonTypes/routes';
 import setCookierParser from 'set-cookie-parser';
 import { REGISTER_SUCCESS_INPUT_DATA } from '../constantsForTests';
-import { RegisteredUserForTest } from '../typesForTests';
+import { RegisteredUserForTest } from 'src/tests/typesForTests';
 
 export async function registerUserForTest(users = [REGISTER_SUCCESS_INPUT_DATA]) {
   const registeredUsers: Record<string, RegisteredUserForTest> = {};

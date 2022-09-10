@@ -1,14 +1,14 @@
-import { clearDB, connectToDB, disconnectFromDB } from '../../../config/database';
-import { WebSocketModule } from '../../../utils/websocketModule';
+import { clearDB, connectToDB, disconnectFromDB } from 'src/config/database';
+import { WebSocketModule } from 'src/utils/websocketModule';
 import { describe } from '@jest/globals';
 import request from 'supertest';
-import { app } from '../../../app';
-import { BASE_ROUTES, USER_ROUTES } from '../../../types/backendAndFrontendCommonTypes/routes';
-import { ERROR_MESSAGES } from '../../../utils/errorMessages';
-import { RegisteredUserForTest } from '../../typesForTests';
+import { app } from 'src/app';
+import { BASE_ROUTES, USER_ROUTES } from 'src/types/backendAndFrontendCommonTypes/routes';
+import { ERROR_MESSAGES } from 'src/utils/errorMessages';
+import { RegisteredUserForTest } from 'src/tests/typesForTests';
 import { REGISTER_SUCCESS_INPUT_DATA, REGISTER_SUCCESS_INPUT_DATA2 } from '../../constantsForTests';
-import { registerUserForTest } from '../../helpersForTests/registerUserForTest';
-import { getTokenForCookieForTest } from '../../helpersForTests/getTokenForCookieForTest';
+import { registerUserForTest } from 'src/tests/helpersForTests/registerUserForTest';
+import { getTokenForCookieForTest } from 'src/tests/helpersForTests/getTokenForCookieForTest';
 
 let registeredUsers: Record<string, RegisteredUserForTest> = {};
 

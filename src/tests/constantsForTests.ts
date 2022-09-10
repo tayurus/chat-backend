@@ -1,4 +1,4 @@
-import { LoginUserBodyParams, RegisterUserBodyParams, SendMessageBodyParams } from '../types/backendParams';
+import { LoginUserBodyParams, RegisterUserBodyParams } from 'src/types/backendParams';
 
 export const REGISTER_SUCCESS_INPUT_DATA: RegisterUserBodyParams = { first_name: 'Yuriy', last_name: 'Tatar', email: 'sooqa@mail.ru', password: '1' };
 export const REGISTER_SUCCESS_INPUT_DATA2: RegisterUserBodyParams = {

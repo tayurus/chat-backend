@@ -1,9 +1,9 @@
 import request from 'supertest';
-import { app } from '../../app';
-import { BASE_ROUTES, DIALOG_ROUTES } from '../../types/backendAndFrontendCommonTypes/routes';
+import { app } from 'src/app';
+import { BASE_ROUTES } from 'src/types/backendAndFrontendCommonTypes/routes';
 import { getTokenForCookieForTest, RegisteredUsersForTest } from './getTokenForCookieForTest';
-import { REGISTER_SUCCESS_INPUT_DATA } from '../constantsForTests';
-import { GetDialogQueryParams, GetDialogUrlParams } from '../../types/backendParams';
+import { REGISTER_SUCCESS_INPUT_DATA } from 'src/tests/constantsForTests';
+import { GetDialogQueryParams, GetDialogUrlParams } from 'src/types/backendParams';
 import * as queryString from 'querystring';
 
 /**

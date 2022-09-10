@@ -1,13 +1,13 @@
-import { clearDB, connectToDB, disconnectFromDB } from '../../../config/database';
-import { WebSocketModule } from '../../../utils/websocketModule';
+import { clearDB, connectToDB, disconnectFromDB } from 'src/config/database';
+import { WebSocketModule } from 'src/utils/websocketModule';
 import { describe } from '@jest/globals';
-import { GetDialogsSuccessResponse } from '../../../types/backendResponses';
+import { GetDialogsSuccessResponse } from 'src/types/backendResponses';
 import { registerUserForTest } from '../../helpersForTests/registerUserForTest';
 import { REGISTER_SUCCESS_INPUT_DATA, REGISTER_SUCCESS_INPUT_DATA2 } from '../../constantsForTests';
 import { RegisteredUsersForTest } from '../../helpersForTests/getTokenForCookieForTest';
 import { writeMessageForTest } from '../../helpersForTests/writeMessageForTest';
 import { getDialogsForTest } from '../../helpersForTests/getDialogsForTest';
-import { SendMessageBodyParams } from '../../../types/backendParams';
+import { SendMessageBodyParams } from 'src/types/backendParams';
 
 let registeredUsers: RegisteredUsersForTest = {};
 

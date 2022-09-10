@@ -1,8 +1,8 @@
 import request from 'supertest';
-import { app } from '../../app';
-import { BASE_ROUTES, DIALOG_ROUTES } from '../../types/backendAndFrontendCommonTypes/routes';
-import { getTokenForCookieForTest, RegisteredUsersForTest } from './getTokenForCookieForTest';
-import { REGISTER_SUCCESS_INPUT_DATA } from '../constantsForTests';
+import { app } from 'src/app';
+import { BASE_ROUTES, DIALOG_ROUTES } from 'src/types/backendAndFrontendCommonTypes/routes';
+import { getTokenForCookieForTest, RegisteredUsersForTest } from 'src/tests/helpersForTests/getTokenForCookieForTest';
+import { REGISTER_SUCCESS_INPUT_DATA } from 'src/tests/constantsForTests';
 
 /**
  * Запрашивает список диалогов для тестирования

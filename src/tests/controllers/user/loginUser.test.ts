@@ -1,14 +1,14 @@
-import { clearDB, connectToDB, disconnectFromDB } from '../../../config/database';
-import { LoginUserBodyParams } from '../../../types/backendParams';
+import { clearDB, connectToDB, disconnectFromDB } from 'src/config/database';
+import { LoginUserBodyParams } from 'src/types/backendParams';
 import { describe } from '@jest/globals';
 import request from 'supertest';
-import { app } from '../../../app';
-import { BASE_ROUTES, USER_ROUTES } from '../../../types/backendAndFrontendCommonTypes/routes';
-import { ERROR_MESSAGES } from '../../../utils/errorMessages';
-import { WebSocketModule } from '../../../utils/websocketModule';
-import { registerUserForTest } from '../../helpersForTests/registerUserForTest';
-import { LOGIN_SUCCESS_INPUT_DATA, REGISTER_SUCCESS_INPUT_DATA } from '../../constantsForTests';
-import { responseHasTokenCookieForTest } from '../../helpersForTests/responseHasTokenCookieForTest';
+import { app } from 'src/app';
+import { BASE_ROUTES, USER_ROUTES } from 'src/types/backendAndFrontendCommonTypes/routes';
+import { ERROR_MESSAGES } from 'src/utils/errorMessages';
+import { WebSocketModule } from 'src/utils/websocketModule';
+import { registerUserForTest } from 'src/tests/helpersForTests/registerUserForTest';
+import { LOGIN_SUCCESS_INPUT_DATA, REGISTER_SUCCESS_INPUT_DATA } from 'src/tests/constantsForTests';
+import { responseHasTokenCookieForTest } from 'src/tests/helpersForTests/responseHasTokenCookieForTest';
 
 beforeAll(async () => await connectToDB());
 beforeEach(done => {

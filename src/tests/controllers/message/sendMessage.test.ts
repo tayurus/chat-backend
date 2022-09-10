@@ -1,15 +1,15 @@
 import { describe, test } from '@jest/globals';
-import { clearDB, connectToDB, disconnectFromDB } from '../../../config/database';
-import { WebSocketModule } from '../../../utils/websocketModule';
-import { SendMessageBodyParams } from '../../../types/backendParams';
-import { SendMessageSuccessResponse } from '../../../types/backendResponses';
-import { Dialog } from '../../../model/dialog';
-import { Message } from '../../../model/message';
-import { ERROR_MESSAGES } from '../../../utils/errorMessages';
-import { RegisteredUserForTest } from '../../typesForTests';
-import { registerUserForTest } from '../../helpersForTests/registerUserForTest';
-import { REGISTER_SUCCESS_INPUT_DATA, REGISTER_SUCCESS_INPUT_DATA2 } from '../../constantsForTests';
-import { writeMessageForTest } from '../../helpersForTests/writeMessageForTest';
+import { clearDB, connectToDB, disconnectFromDB } from 'src/config/database';
+import { WebSocketModule } from 'src/utils/websocketModule';
+import { SendMessageBodyParams } from 'src/types/backendParams';
+import { SendMessageSuccessResponse } from 'src/types/backendResponses';
+import { Dialog } from 'src/model/dialog';
+import { Message } from 'src/model/message';
+import { ERROR_MESSAGES } from 'src/utils/errorMessages';
+import { RegisteredUserForTest } from 'src/tests/typesForTests';
+import { registerUserForTest } from 'src/tests/helpersForTests/registerUserForTest';
+import { REGISTER_SUCCESS_INPUT_DATA, REGISTER_SUCCESS_INPUT_DATA2 } from 'src/tests/constantsForTests';
+import { writeMessageForTest } from 'src/tests/helpersForTests/writeMessageForTest';
 
 let registeredUsers: Record<string, RegisteredUserForTest> = {};
 
