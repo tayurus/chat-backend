@@ -1,14 +1,14 @@
-import { clearDB, connectToDB, disconnectFromDB } from '../../../config/database';
-import { registerUserForTest } from '../../helpersForTests/registerUserForTest';
-import { REGISTER_SUCCESS_INPUT_DATA, REGISTER_SUCCESS_INPUT_DATA2 } from '../../constantsForTests';
-import { WebSocketModule } from '../../../utils/websocketModule';
-import { RegisteredUsersForTest } from '../../helpersForTests/getTokenForCookieForTest';
-import { describe } from '@jest/globals';
-import { writeMessageForTest } from '../../helpersForTests/writeMessageForTest';
-import { GetDialogSuccessResponse, SendMessageSuccessResponse } from '../../../types/backendResponses';
-import { getDialogForTest } from '../../helpersForTests/getDialogForTest';
-import { SendMessageBodyParams } from '../../../types/backendParams';
-import { ERROR_MESSAGES } from '../../../utils/errorMessages';
+import { clearDB, connectToDB, disconnectFromDB } from "src/config/database";
+import { registerUserForTest } from "src/tests/helpersForTests/registerUserForTest";
+import { REGISTER_SUCCESS_INPUT_DATA, REGISTER_SUCCESS_INPUT_DATA2 } from "src/tests/constantsForTests";
+import { WebSocketModule } from "src/utils/websocketModule";
+import { RegisteredUsersForTest } from "src/tests/helpersForTests/getTokenForCookieForTest";
+import { describe } from "@jest/globals";
+import { writeMessageForTest } from "src/tests/helpersForTests/writeMessageForTest";
+import { GetDialogSuccessResponse, SendMessageSuccessResponse } from "src/types/backendResponses";
+import { getDialogForTest } from "src/tests/helpersForTests/getDialogForTest";
+import { SendMessageBodyParams } from "src/types/backendParams";
+import { ERROR_MESSAGES } from "src/utils/errorMessages";
 
 let registeredUsers: RegisteredUsersForTest = {};
 
