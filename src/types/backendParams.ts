@@ -37,3 +37,8 @@ export type WsUserTypingParams = {
   dialogId: string;
   typingType: UserTyping;
 };
+
+export type UpdateUserPasswordParams = {
+  oldPassword: string;
+  newPassword: string;
+};

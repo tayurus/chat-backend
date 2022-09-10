@@ -6,8 +6,14 @@ import request from 'supertest';
 import { app } from 'src/app';
 import { BASE_ROUTES, USER_ROUTES } from 'src/types/backendAndFrontendCommonTypes/routes';
 import { RegisteredUserForTest } from 'src/tests/typesForTests';
+import { UpdateUserPasswordParams } from 'src/types/backendParams';
 
 let registeredUsers: Record<string, RegisteredUserForTest> = {};
+
+const UPDATE_PASSWORD_SUCCESS_PARAMS: UpdateUserPasswordParams = {
+  newPassword: '2',
+  oldPassword: REGISTER_SUCCESS_INPUT_DATA.password,
+};
 
 beforeAll(async () => await connectToDB());
 beforeEach(done => {
@@ -24,9 +30,9 @@ afterAll(async () => {
 describe('Изменение пароля пользователя', () => {
   test('успешный сценарий - старый пароль верен, новый пароль введен', done => {
     request(app)
-      .get(`${BASE_ROUTES.USER}${USER_ROUTES.SEARCH_USERS}?query=${REGISTER_SUCCESS_INPUT_DATA.first_name}`)
+      .get(`${BASE_ROUTES.USER}${USER_ROUTES.CHANGE_PASSWORD}`)
       .set('Cookie', getTokenForCookie({ registeredUsers, email: REGISTER_SUCCESS_INPUT_DATA.email }))
-      .send()
+      .send(UPDATE_PASSWORD_SUCCESS_PARAMS)
       .expect(200)
       .end((err, res) => {
         if (err) {
