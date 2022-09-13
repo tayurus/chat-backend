@@ -87,3 +87,5 @@ export type WsUserTypingResponse = {
   typingType: UserTyping;
   dialogId: string;
 };
+
+export type UpdateUserPasswordResponse = {};

@@ -11,4 +11,7 @@ export enum ERROR_MESSAGES {
   ALL_INPUT_IS_REQUIRED = 'All input is required',
   USER_ALREADY_EXISTS = 'User already exists',
   TOKEN_REQUIRED = 'You did not pass auth token!',
+  OLD_PASSWORD_INVALID = 'Old password is invalid',
+  NEW_PASSWORD_IS_REQUIRED = 'New password is required',
+  NEW_PASSWORD_MUST_BE_DIFFERENT_FROM_OLD = 'New password must be different from old',
 }

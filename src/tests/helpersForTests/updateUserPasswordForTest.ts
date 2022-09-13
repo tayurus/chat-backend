@@ -1,5 +1,8 @@
 import { UpdateUserPasswordParams } from 'src/types/backendParams';
-import { RegisteredUsersForTest } from 'src/tests/helpersForTests/getTokenForCookieForTest';
+import { getTokenForCookieForTest, RegisteredUsersForTest } from 'src/tests/helpersForTests/getTokenForCookieForTest';
+import request from 'supertest';
+import { app } from 'src/app';
+import { BASE_ROUTES, USER_ROUTES } from 'src/types/backendAndFrontendCommonTypes/routes';
 
 /**
  * Менят пароль для теста
@@ -7,9 +10,25 @@ import { RegisteredUsersForTest } from 'src/tests/helpersForTests/getTokenForCoo
  * */
 export async function updateUserPasswordForTest(params: {
   data: UpdateUserPasswordParams;
+  withAuthToken?: boolean;
   expectedStatus?: number;
   requesterEmail: string;
   registeredUsers: RegisteredUsersForTest;
 }) {
-  const { data, expectedStatus = 200, requesterEmail } = params;
+  const { registeredUsers, data, expectedStatus = 200, requesterEmail, withAuthToken = true } = params;
+
+  return request(app)
+    .get(`${BASE_ROUTES.USER}${USER_ROUTES.CHANGE_PASSWORD}`)
+    .set('Cookie', withAuthToken ? getTokenForCookieForTest({ registeredUsers, email: requesterEmail }) : [])
+    .send(data)
+    .expect(expectedStatus)
+    .then(res => {
+      return res;
+    })
+    .catch(err => {
+      if (err) {
+        console.log('updateUserPasswordForTest err = ', err);
+        return err;
+      }
+    });
 }
