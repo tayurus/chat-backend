@@ -58,5 +58,3 @@ export const registerUser = async (req: TypedRequestBody<RegisterUserBodyParams>
   }
   // Our register logic ends here
 };
-
-module.exports = { registerUser };

@@ -9,7 +9,10 @@ import { normalizeFoundedUser } from 'src/utils/user';
 export const searchUsers = async (req: TypedRequestBody<{}, SearchUsersQueryParams>, res: TypedResponse<SearchUsersResponse>) => {
   const {
     query: { query: searchQuery },
+    user,
   } = req;
+
+  console.log('user = ', user);
 
   if (!searchQuery) {
     return res.status(400).send(ERROR_MESSAGES.QUERY_STRING_IS_EMTY);

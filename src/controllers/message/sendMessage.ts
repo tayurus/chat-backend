@@ -106,5 +106,3 @@ export const sendMessage = async (req: TypedRequestBody<SendMessageBodyParams>, 
     return res.status(400).send(ERROR_MESSAGES.SEND_MESSAGE_ERROR);
   }
 };
-
-module.exports = { sendMessage };

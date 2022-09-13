@@ -34,5 +34,3 @@ export const loginUser = async (req: TypedRequestBody<LoginUserBodyParams>, res:
     return res.status(400).send(ERROR_MESSAGES.USER_NOT_FOUND);
   }
 };
-
-module.exports = { loginUser };
