@@ -41,6 +41,7 @@ afterAll(async () => {
 describe('Отправка сообщения', () => {
   test('успешный сценарий - диалога еще нет', done => {
     writeMessageForTest({
+      registeredUsers,
       fromUser: registeredUsers[REGISTER_SUCCESS_INPUT_DATA.email],
       message: SEND_MESSAGE_BODY_PARAMS_WITHOUT_DIALOG_ID.message,
       toUser: registeredUsers[REGISTER_SUCCESS_INPUT_DATA2.email],
@@ -62,6 +63,7 @@ describe('Отправка сообщения', () => {
 
   test('успешный сценарий - диалог есть', done => {
     writeMessageForTest({
+      registeredUsers,
       fromUser: registeredUsers[REGISTER_SUCCESS_INPUT_DATA.email],
       message: SEND_MESSAGE_BODY_PARAMS_WITHOUT_DIALOG_ID.message,
       toUser: registeredUsers[REGISTER_SUCCESS_INPUT_DATA2.email],
@@ -71,6 +73,7 @@ describe('Отправка сообщения', () => {
 
       // отправляем еще одно сообщение в этот диалог
       writeMessageForTest({
+        registeredUsers,
         fromUser: registeredUsers[REGISTER_SUCCESS_INPUT_DATA.email],
         message: SEND_MESSAGE_BODY_PARAMS_WITH_DIALOG_ID.message,
         dialogId: SEND_MESSAGE_BODY_PARAMS_WITH_DIALOG_ID.dialogId,
@@ -93,6 +96,7 @@ describe('Отправка сообщения', () => {
 
   test('неуспешный сценарий - пустое сообщение (для нового диалога)', done => {
     writeMessageForTest({
+      registeredUsers,
       fromUser: registeredUsers[REGISTER_SUCCESS_INPUT_DATA.email],
       message: '',
       toUser: registeredUsers[REGISTER_SUCCESS_INPUT_DATA2.email],
@@ -114,6 +118,7 @@ describe('Отправка сообщения', () => {
 
   test('неуспешный сценарий - получатель не найден', done => {
     writeMessageForTest({
+      registeredUsers,
       fromUser: registeredUsers[REGISTER_SUCCESS_INPUT_DATA.email],
       message: SEND_MESSAGE_BODY_PARAMS_WITHOUT_DIALOG_ID.message,
       toUser: { ...registeredUsers[REGISTER_SUCCESS_INPUT_DATA2.email], id: '1488228' },
@@ -135,6 +140,7 @@ describe('Отправка сообщения', () => {
 
   test('неуспешный сценарий - диалог не найден', done => {
     writeMessageForTest({
+      registeredUsers,
       fromUser: registeredUsers[REGISTER_SUCCESS_INPUT_DATA.email],
       message: SEND_MESSAGE_BODY_PARAMS_WITHOUT_DIALOG_ID.message,
       toUser: { ...registeredUsers[REGISTER_SUCCESS_INPUT_DATA2.email] },

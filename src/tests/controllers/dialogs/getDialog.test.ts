@@ -1,14 +1,14 @@
-import { clearDB, connectToDB, disconnectFromDB } from "src/config/database";
-import { registerUserForTest } from "src/tests/helpersForTests/registerUserForTest";
-import { REGISTER_SUCCESS_INPUT_DATA, REGISTER_SUCCESS_INPUT_DATA2 } from "src/tests/constantsForTests";
-import { WebSocketModule } from "src/utils/websocketModule";
-import { RegisteredUsersForTest } from "src/tests/helpersForTests/getTokenForCookieForTest";
-import { describe } from "@jest/globals";
-import { writeMessageForTest } from "src/tests/helpersForTests/writeMessageForTest";
-import { GetDialogSuccessResponse, SendMessageSuccessResponse } from "src/types/backendResponses";
-import { getDialogForTest } from "src/tests/helpersForTests/getDialogForTest";
-import { SendMessageBodyParams } from "src/types/backendParams";
-import { ERROR_MESSAGES } from "src/utils/errorMessages";
+import { clearDB, connectToDB, disconnectFromDB } from 'src/config/database';
+import { registerUserForTest } from 'src/tests/helpersForTests/registerUserForTest';
+import { REGISTER_SUCCESS_INPUT_DATA, REGISTER_SUCCESS_INPUT_DATA2 } from 'src/tests/constantsForTests';
+import { WebSocketModule } from 'src/utils/websocketModule';
+import { RegisteredUsersForTest } from 'src/tests/helpersForTests/getTokenForCookieForTest';
+import { describe } from '@jest/globals';
+import { writeMessageForTest } from 'src/tests/helpersForTests/writeMessageForTest';
+import { GetDialogSuccessResponse, SendMessageSuccessResponse } from 'src/types/backendResponses';
+import { getDialogForTest } from 'src/tests/helpersForTests/getDialogForTest';
+import { SendMessageBodyParams } from 'src/types/backendParams';
+import { ERROR_MESSAGES } from 'src/utils/errorMessages';
 
 let registeredUsers: RegisteredUsersForTest = {};
 
@@ -39,6 +39,7 @@ describe('Получение диалога по id', () => {
   test('Успешный сценарий - диалог есть', done => {
     // пишем сообщение
     writeMessageForTest({
+      registeredUsers,
       fromUser: registeredUsers[REGISTER_SUCCESS_INPUT_DATA.email],
       message: FIRST_MESSAGE_TEXT,
       toUser: registeredUsers[REGISTER_SUCCESS_INPUT_DATA2.email],
@@ -48,6 +49,7 @@ describe('Получение диалога по id', () => {
 
       // и еще одно
       const writeMessageRes = await writeMessageForTest({
+        registeredUsers,
         fromUser: registeredUsers[REGISTER_SUCCESS_INPUT_DATA.email],
         message: SECOND_MESSAGE_TEXT,
         dialogId,
@@ -58,6 +60,7 @@ describe('Получение диалога по id', () => {
       // запрашиваем диалог с этим кеком с отступом 0 и кол-вом 1
       const getDialogRes = await getDialogForTest({
         registeredUsers,
+        requesterEmail: REGISTER_SUCCESS_INPUT_DATA.email,
         expectedStatus: 200,
         requestUrlParams: { dialogId: writeMessageResBody.dialogId },
         requestQueryParams: { limit: '1', offset: '0' },
@@ -70,6 +73,7 @@ describe('Получение диалога по id', () => {
       // запрашиваем диалог с этим кеком уже с отступом 1 и кол-вом 1
       const getDialogResSecond = await getDialogForTest({
         registeredUsers,
+        requesterEmail: REGISTER_SUCCESS_INPUT_DATA.email,
         expectedStatus: 200,
         requestUrlParams: { dialogId: writeMessageResBody.dialogId },
         requestQueryParams: { limit: '1', offset: '1' },
@@ -86,6 +90,7 @@ describe('Получение диалога по id', () => {
   test('неуспешный сценарий - диалога нет', done => {
     getDialogForTest({
       registeredUsers,
+      requesterEmail: REGISTER_SUCCESS_INPUT_DATA.email,
       expectedStatus: 400,
       requestUrlParams: { dialogId: '1488228' },
       requestQueryParams: { limit: '1', offset: '0' },

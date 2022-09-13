@@ -2,18 +2,18 @@ import { SendMessageBodyParams } from 'src/types/backendParams';
 import request from 'supertest';
 import { app } from 'src/app';
 import { BASE_ROUTES, MESSAGE_ROUTES } from 'src/types/backendAndFrontendCommonTypes/routes';
-import { getTokenForCookieForTest } from './getTokenForCookieForTest';
+import { getTokenForCookieForTest, RegisteredUsersForTest } from './getTokenForCookieForTest';
 import { RegisteredUserForTest } from 'src/tests/typesForTests';
-import { REGISTER_SUCCESS_INPUT_DATA } from 'src/tests/constantsForTests';
 
 export async function writeMessageForTest(params: {
+  registeredUsers: RegisteredUsersForTest;
   fromUser: RegisteredUserForTest;
   toUser?: RegisteredUserForTest;
   message: string;
   dialogId?: string;
   expectedStatus?: number;
 }): Promise<request.Response> {
-  const { fromUser, toUser, message, dialogId, expectedStatus = 200 } = params;
+  const { registeredUsers, fromUser, toUser, message, dialogId, expectedStatus = 200 } = params;
   const messageForSend: SendMessageBodyParams = {
     message,
     toUserId: toUser?.id,
@@ -21,7 +21,7 @@ export async function writeMessageForTest(params: {
   };
   return await request(app)
     .post(`${BASE_ROUTES.MESSAGE}${MESSAGE_ROUTES.SEND}`)
-    .set('Cookie', getTokenForCookieForTest({ registeredUsers: { [fromUser.email]: fromUser }, email: REGISTER_SUCCESS_INPUT_DATA.email }))
+    .set('Cookie', getTokenForCookieForTest({ registeredUsers, email: fromUser.email }))
     // отправляем сообщение
     .send(messageForSend)
     .expect(expectedStatus)

@@ -32,7 +32,7 @@ afterAll(async () => {
 
 describe('Получение списка диалогов', () => {
   test('успешный сценарий - диалогов нет', done => {
-    getDialogsForTest({ registeredUsers }).then(res => {
+    getDialogsForTest({ registeredUsers, requesterEmail: REGISTER_SUCCESS_INPUT_DATA.email }).then(res => {
       const resBody: GetDialogsSuccessResponse = res.body;
       expect(resBody.length).toBe(0);
       done();
@@ -42,11 +42,12 @@ describe('Получение списка диалогов', () => {
 
 test('успешный сценарий - диалоги есть', done => {
   writeMessageForTest({
+    registeredUsers,
     fromUser: registeredUsers[REGISTER_SUCCESS_INPUT_DATA.email],
     toUser: registeredUsers[REGISTER_SUCCESS_INPUT_DATA2.email],
     message: 'test',
   }).then(() => {
-    getDialogsForTest({ registeredUsers }).then(res => {
+    getDialogsForTest({ registeredUsers, requesterEmail: REGISTER_SUCCESS_INPUT_DATA.email }).then(res => {
       const resBody: GetDialogsSuccessResponse = res.body;
       expect(resBody.length).toBe(1);
       done();
