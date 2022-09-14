@@ -105,7 +105,7 @@ describe('Изменение пароля пользователя', () => {
       registeredUsers,
       requesterEmail: REGISTER_SUCCESS_INPUT_DATA.email,
       data: UPDATE_PASSWORD_SUCCESS_PARAMS,
-      expectedStatus: 400,
+      expectedStatus: 403,
       withAuthToken: false,
     }).then(res => {
       // проверить, что в куках не пришел токен
