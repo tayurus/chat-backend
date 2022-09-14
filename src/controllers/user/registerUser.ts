@@ -39,7 +39,7 @@ export const registerUser = async (req: TypedRequestBody<RegisterUserBodyParams>
     // Create token
     const token = signUser({ id: user._id.toString(), email, last_name: user.last_name, first_name: user.first_name });
     // save user token
-    user.token = token;
+    // user.token = token;
 
     res.cookie('token', token, { maxAge: 900000 });
 

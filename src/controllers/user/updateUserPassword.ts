@@ -26,7 +26,7 @@ export const loginUser = async (req: TypedRequestBody<UpdateUserPasswordParams>,
 
     const token = signUser({ id: userInDb!._id.toString(), email: user.email, last_name: user.last_name, first_name: user.first_name });
 
-    user.token = token;
+    // user.token = token;
 
     res.cookie('token', token, { maxAge: 900000 });
 
