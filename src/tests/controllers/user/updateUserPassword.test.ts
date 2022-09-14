@@ -1,6 +1,6 @@
 import { clearDB, connectToDB, disconnectFromDB } from 'src/config/database';
 import { WebSocketModule } from 'src/utils/websocketModule';
-import { REGISTER_SUCCESS_INPUT_DATA, REGISTER_SUCCESS_INPUT_DATA2 } from 'src/tests/constantsForTests';
+import { REGISTER_SUCCESS_INPUT_DATA } from 'src/tests/constantsForTests';
 import { describe } from '@jest/globals';
 import { RegisteredUserForTest } from 'src/tests/typesForTests';
 import { UpdateUserPasswordParams } from 'src/types/backendParams';
@@ -12,12 +12,12 @@ import { ERROR_MESSAGES } from 'src/utils/errorMessages';
 let registeredUsers: Record<string, RegisteredUserForTest> = {};
 
 const UPDATE_PASSWORD_SUCCESS_PARAMS: UpdateUserPasswordParams = {
-  newPassword: '2',
+  newPassword: REGISTER_SUCCESS_INPUT_DATA.password + 'someNewPassword',
   oldPassword: REGISTER_SUCCESS_INPUT_DATA.password,
 };
 
 const UPDATE_PASSWORD_INVALID_OLD_PASSWORD: UpdateUserPasswordParams = {
-  newPassword: '2',
+  newPassword: REGISTER_SUCCESS_INPUT_DATA.password + 'someNewPassword',
   oldPassword: REGISTER_SUCCESS_INPUT_DATA.password + '1488228',
 };
 
@@ -33,7 +33,7 @@ const UPDATE_PASSWORD_PASSWORDS_EQUAL: UpdateUserPasswordParams = {
 
 beforeAll(async () => await connectToDB());
 beforeEach(done => {
-  registerUserForTest([REGISTER_SUCCESS_INPUT_DATA, REGISTER_SUCCESS_INPUT_DATA2]).then(authTokensFromBackend => {
+  registerUserForTest([REGISTER_SUCCESS_INPUT_DATA]).then(authTokensFromBackend => {
     registeredUsers = Object.assign({}, authTokensFromBackend);
     WebSocketModule.server.close(() => done());
   });
@@ -61,10 +61,11 @@ describe('Изменение пароля пользователя', () => {
       data: UPDATE_PASSWORD_INVALID_OLD_PASSWORD,
       expectedStatus: 400,
     }).then(res => {
+      console.log('res.headers = ', res.headers);
       // проверить, что в куках не пришел токен
       expect(responseHasTokenCookieForTest(res)).toBe(false);
 
-      expect(res.body).toBe(ERROR_MESSAGES.OLD_PASSWORD_INVALID);
+      expect(res.text).toBe(ERROR_MESSAGES.OLD_PASSWORD_INVALID);
       done();
     });
   });
@@ -79,7 +80,7 @@ describe('Изменение пароля пользователя', () => {
       // проверить, что в куках не пришел токен
       expect(responseHasTokenCookieForTest(res)).toBe(false);
 
-      expect(res.body).toBe(ERROR_MESSAGES.NEW_PASSWORD_IS_REQUIRED);
+      expect(res.text).toBe(ERROR_MESSAGES.NEW_PASSWORD_IS_REQUIRED);
       done();
     });
   });
@@ -94,7 +95,7 @@ describe('Изменение пароля пользователя', () => {
       // проверить, что в куках не пришел токен
       expect(responseHasTokenCookieForTest(res)).toBe(false);
 
-      expect(res.body).toBe(ERROR_MESSAGES.NEW_PASSWORD_MUST_BE_DIFFERENT_FROM_OLD);
+      expect(res.text).toBe(ERROR_MESSAGES.NEW_PASSWORD_MUST_BE_DIFFERENT_FROM_OLD);
       done();
     });
   });
@@ -103,13 +104,14 @@ describe('Изменение пароля пользователя', () => {
     updateUserPasswordForTest({
       registeredUsers,
       requesterEmail: REGISTER_SUCCESS_INPUT_DATA.email,
-      data: UPDATE_PASSWORD_PASSWORDS_EQUAL,
+      data: UPDATE_PASSWORD_SUCCESS_PARAMS,
       expectedStatus: 400,
+      withAuthToken: false,
     }).then(res => {
       // проверить, что в куках не пришел токен
       expect(responseHasTokenCookieForTest(res)).toBe(false);
 
-      expect(res.body).toBe(ERROR_MESSAGES.TOKEN_REQUIRED);
+      expect(res.text).toBe(ERROR_MESSAGES.TOKEN_REQUIRED);
       done();
     });
   });

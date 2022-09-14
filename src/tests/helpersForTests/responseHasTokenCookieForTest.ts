@@ -6,5 +6,8 @@
 import request from 'supertest';
 
 export function responseHasTokenCookieForTest(res: request.Response) {
-  return res.headers['set-cookie'][0].startsWith('token=');
+  if (res.headers && res.headers['set-cookie'] && Array.isArray(res.headers['set-cookie']) && typeof res.headers['set-cookie'][0] === 'string') {
+    return res.headers['set-cookie'][0].startsWith('token=');
+  }
+  return false;
 }

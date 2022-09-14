@@ -18,7 +18,7 @@ export async function updateUserPasswordForTest(params: {
   const { registeredUsers, data, expectedStatus = 200, requesterEmail, withAuthToken = true } = params;
 
   return request(app)
-    .get(`${BASE_ROUTES.USER}${USER_ROUTES.CHANGE_PASSWORD}`)
+    .post(`${BASE_ROUTES.USER}${USER_ROUTES.UPDATE_PASSWORD}`)
     .set('Cookie', withAuthToken ? getTokenForCookieForTest({ registeredUsers, email: requesterEmail }) : [])
     .send(data)
     .expect(expectedStatus)

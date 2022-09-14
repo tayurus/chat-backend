@@ -15,4 +15,5 @@ export enum ERROR_MESSAGES {
   NEW_PASSWORD_IS_REQUIRED = 'New password is required',
   NEW_PASSWORD_MUST_BE_DIFFERENT_FROM_OLD = 'New password must be different from old',
   INVALID_TOKEN = 'Invalid token',
+  UNEXPECTED_ERROR = 'unexpected server error',
 }
