@@ -17,7 +17,7 @@ export const verifyToken = (req: TypedRequestBody, res: TypedResponse<string>, n
     // @ts-ignore
     req.user = decoded;
   } catch (e) {
-    return res.status(403).send('Invalid token');
+    return res.status(403).send(ERROR_MESSAGES.INVALID_TOKEN);
   }
 
   return next ? next() : undefined;
