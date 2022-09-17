@@ -17,6 +17,8 @@ import {
 } from 'src/utils/user';
 import { WebSocketMessage, WebSocketsEvents } from 'src/types/backendResponses';
 import { WsUserTypingParams } from 'src/types/backendParams';
+import path from 'path';
+import { fileRouter } from 'src/routes/file.router';
 
 connectToDB();
 
@@ -64,9 +66,7 @@ app.use(BASE_ROUTES.USER, userRouter);
 app.use(BASE_ROUTES.MESSAGE, verifyToken, messageRouter);
 // @ts-ignore
 app.use(BASE_ROUTES.DIALOG, verifyToken, dialogRouter);
-
-app.get('/', function (request, response) {
-  response.send('Hello Test');
-});
+// @ts-ignore
+app.use(BASE_ROUTES.FILE, verifyToken, fileRouter);
 
 export { app };

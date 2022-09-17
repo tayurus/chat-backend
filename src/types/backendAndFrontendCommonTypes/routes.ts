@@ -2,6 +2,7 @@ export enum BASE_ROUTES {
   USER = '/user',
   MESSAGE = '/message',
   DIALOG = '/dialog',
+  FILE = '/file',
 }
 
 export enum USER_ROUTES {
@@ -19,4 +20,9 @@ export enum MESSAGE_ROUTES {
 export enum DIALOG_ROUTES {
   GET_DIALOGS = '/dialogs',
   GET_BY_ID = '/:dialogId',
+}
+
+export enum FILE_ROUTES {
+  UPLOAD = '/upload',
+  GET = '/:filename',
 }
