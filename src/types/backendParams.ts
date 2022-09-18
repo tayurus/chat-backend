@@ -1,4 +1,5 @@
 import { UserTyping } from 'src/types/backendAndFrontendCommonTypes/userTyping';
+import { FILE_UPLOAD } from 'src/types/backendAndFrontendCommonTypes/constants';
 
 export type GetDialogsParams = {};
 
@@ -41,4 +42,8 @@ export type WsUserTypingParams = {
 export type UpdateUserPasswordParams = {
   oldPassword: string;
   newPassword: string;
+};
+
+export type UploadFileQueryParams = {
+  type: FILE_UPLOAD;
 };

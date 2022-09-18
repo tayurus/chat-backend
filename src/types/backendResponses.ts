@@ -89,3 +89,5 @@ export type WsUserTypingResponse = {
 };
 
 export type UpdateUserPasswordResponse = {};
+
+export type UploadFileResponse = { url: string };

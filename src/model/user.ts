@@ -6,6 +6,7 @@ export type UserType = {
   email: string;
   password: string;
   dialogs: mongoose.Schema.Types.Array;
+  profilePhoto: string;
   token: string;
 };
 
@@ -15,6 +16,7 @@ const userSchema = new mongoose.Schema<UserType>({
   email: { type: String, unique: true },
   password: { type: String },
   dialogs: { type: Array, default: [] },
+  profilePhoto: { type: String },
   token: { type: String },
 });
 

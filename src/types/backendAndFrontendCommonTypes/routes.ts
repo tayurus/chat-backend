@@ -25,4 +25,5 @@ export enum DIALOG_ROUTES {
 export enum FILE_ROUTES {
   UPLOAD = '/upload',
   GET = '/:filename',
+  UPLOAD_STORAGE = '/uploads',
 }

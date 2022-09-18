@@ -1,6 +1,5 @@
 import path from 'path';
 import { TypedRequestBody, TypedResponse } from 'src/types/express';
-
 import { ERROR_MESSAGES } from 'src/utils/errorMessages';
 import * as fs from 'fs';
 
@@ -12,10 +11,9 @@ export const uploadFile = async (req: TypedRequestBody, res: TypedResponse<any>)
   console.log('UPLOAD FILE');
   if (req.file) {
     const tempPath = req.file.path;
-    const targetPath = path.join('./src/uploads/image.png');
 
     if (path.extname(req.file.originalname).toLowerCase() === '.png') {
-      fs.rename(tempPath, targetPath, err => {
+      fs.rename(tempPath, tempPath + '.png', err => {
         if (err) return handleError(err, res);
 
         res.status(200).send('File uploaded!');
@@ -24,7 +22,7 @@ export const uploadFile = async (req: TypedRequestBody, res: TypedResponse<any>)
       fs.unlink(tempPath, err => {
         if (err) return handleError(err, res);
 
-        res.status(403).send('Only .png files are allowed!');
+        res.status(403).send('Only .png or .jpg files are allowed!');
       });
     }
   } else {

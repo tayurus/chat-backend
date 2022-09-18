@@ -17,4 +17,6 @@ export enum ERROR_MESSAGES {
   INVALID_TOKEN = 'Invalid token',
   UNEXPECTED_ERROR = 'unexpected server error',
   FILE_IS_REQUIRED = 'file is required',
+  FILE_IS_TOO_BIG = 'file is too big (max 1mb)',
+  INVALID_FILE_TYPE = 'invalid file type',
 }
