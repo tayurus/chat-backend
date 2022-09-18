@@ -8,12 +8,13 @@ const handleError = (err: any, res: any) => {
 };
 
 export const uploadFile = async (req: TypedRequestBody, res: TypedResponse<any>) => {
-  console.log('UPLOAD FILE');
   if (req.file) {
     const tempPath = req.file.path;
+    const fileExtension = path.extname(req.file.originalname).toLowerCase();
+    const resultPath = tempPath + fileExtension;
 
-    if (path.extname(req.file.originalname).toLowerCase() === '.png') {
-      fs.rename(tempPath, tempPath + '.png', err => {
+    if (fileExtension === '.png') {
+      fs.rename(tempPath, resultPath, err => {
         if (err) return handleError(err, res);
 
         res.status(200).send('File uploaded!');
