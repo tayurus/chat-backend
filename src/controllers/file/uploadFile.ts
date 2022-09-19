@@ -8,6 +8,7 @@ const handleError = (err: any, res: any) => {
 };
 
 export const uploadFile = async (req: TypedRequestBody, res: TypedResponse<any>) => {
+  console.log('YA TUT');
   if (req.file) {
     const tempPath = req.file.path;
     const fileExtension = getFileExtension(req.file);

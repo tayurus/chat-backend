@@ -25,22 +25,39 @@ const FILE_RESTRICTIONS_BY_TYPE: Record<FILE_UPLOAD, FILE_RESTRICTIONS> = {
 const upload = multer({
   dest: `./src${FILE_ROUTES.UPLOAD_STORAGE}`,
   fileFilter(req: TypedRequestBody<{}, UploadFileQueryParams>, file: Express.Multer.File, callback: multer.FileFilterCallback) {
-    console.log('file =', file);
     const fileRestrictions = FILE_RESTRICTIONS_BY_TYPE[req.query.type];
-    if (fileRestrictions.mimetype.includes(getFileExtension(file))) {
+    if (fileRestrictions.mimetype.includes(file.mimetype)) {
       callback(null, true);
     } else {
-      callback(null, true);
-      // callback({ name: ERROR_MESSAGES.INVALID_FILE_TYPE, message: ERROR_MESSAGES.INVALID_FILE_TYPE });
+      callback(new Error(ERROR_MESSAGES.INVALID_FILE_TYPE));
     }
   },
   // limits: { fileSize: MAX_FILE_SIZE },
-});
+}).single('file');
 
 const fileRouter = express.Router();
 
 // @ts-ignore
-fileRouter.post(FILE_ROUTES.UPLOAD, upload.single('file'), uploadFile); // @ts-ignore
+fileRouter.post(
+  FILE_ROUTES.UPLOAD,
+  (req, res, next) => {
+    // @ts-ignore
+    upload(req, res, (err: any) => {
+      if (err instanceof multer.MulterError) {
+        // A Multer error occurred when uploading.
+        console.log('1 = ', err);
+      } else if (err) {
+        console.log('2 = ', err);
+        res.status(400).send(err.toString());
+        // An unknown error occurred when uploading.
+      } else {
+        next!();
+      }
+    });
+  },
+  // @ts-ignore
+  uploadFile,
+); // @ts-ignore
 fileRouter.get(FILE_ROUTES.GET, getFile);
 
 export { fileRouter };
