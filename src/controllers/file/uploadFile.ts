@@ -1,7 +1,7 @@
-import path from 'path';
 import { TypedRequestBody, TypedResponse } from 'src/types/express';
 import { ERROR_MESSAGES } from 'src/utils/errorMessages';
 import * as fs from 'fs';
+import { getFileExtension } from 'src/utils/file';
 
 const handleError = (err: any, res: any) => {
   res.status(500).send(`Oops! Something went wrong! ${JSON.stringify(err)}`);
@@ -10,22 +10,14 @@ const handleError = (err: any, res: any) => {
 export const uploadFile = async (req: TypedRequestBody, res: TypedResponse<any>) => {
   if (req.file) {
     const tempPath = req.file.path;
-    const fileExtension = path.extname(req.file.originalname).toLowerCase();
+    const fileExtension = getFileExtension(req.file);
     const resultPath = tempPath + fileExtension;
 
-    if (fileExtension === '.png') {
-      fs.rename(tempPath, resultPath, err => {
-        if (err) return handleError(err, res);
+    fs.rename(tempPath, resultPath, err => {
+      if (err) return handleError(err, res);
 
-        res.status(200).send('File uploaded!');
-      });
-    } else {
-      fs.unlink(tempPath, err => {
-        if (err) return handleError(err, res);
-
-        res.status(403).send('Only .png or .jpg files are allowed!');
-      });
-    }
+      res.status(200).send(resultPath);
+    });
   } else {
     res.status(400).send(ERROR_MESSAGES.FILE_IS_REQUIRED);
   }

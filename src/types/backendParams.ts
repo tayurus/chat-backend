@@ -47,3 +47,7 @@ export type UpdateUserPasswordParams = {
 export type UploadFileQueryParams = {
   type: FILE_UPLOAD;
 };
+
+export type UploadFileBodyParams = {
+  file: Blob;
+};
