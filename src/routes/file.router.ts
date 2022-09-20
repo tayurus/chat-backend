@@ -6,7 +6,6 @@ import { getFile } from 'src/controllers/file/getFile';
 import { FILE_UPLOAD } from 'src/types/backendAndFrontendCommonTypes/constants';
 import { TypedRequestBody } from 'src/types/express';
 import { UploadFileQueryParams } from 'src/types/backendParams';
-import { getFileExtension } from 'src/utils/file';
 import { ERROR_MESSAGES } from 'src/utils/errorMessages';
 
 const ONE_KILOBYTE = 1024;
@@ -45,9 +44,8 @@ fileRouter.post(
     upload(req, res, (err: any) => {
       if (err instanceof multer.MulterError) {
         // A Multer error occurred when uploading.
-        console.log('1 = ', err);
+        res.status(400).send(err.toString());
       } else if (err) {
-        console.log('2 = ', err);
         res.status(400).send(err.toString());
         // An unknown error occurred when uploading.
       } else {

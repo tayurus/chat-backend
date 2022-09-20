@@ -90,4 +90,5 @@ export type WsUserTypingResponse = {
 
 export type UpdateUserPasswordResponse = {};
 
-export type UploadFileResponse = { url: string };
+export type UploadFileSuccessResponse = { url: string };
+export type UploadFileResponse = string | UploadFileSuccessResponse;

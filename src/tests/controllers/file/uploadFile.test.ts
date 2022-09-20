@@ -11,7 +11,7 @@ import {
 import { describe } from '@jest/globals';
 import { RegisteredUserForTest } from 'src/tests/typesForTests';
 import { uploadFileForTest } from 'src/tests/helpersForTests/uploadFileForTest';
-import { UploadFileResponse } from 'src/types/backendResponses';
+import { UploadFileSuccessResponse } from 'src/types/backendResponses';
 import { User } from 'src/model/user';
 import request from 'supertest';
 import { app } from 'src/app';
@@ -40,12 +40,14 @@ describe('Загрузка файла', () => {
       requesterEmail: REGISTER_SUCCESS_INPUT_DATA.email,
       data: { pathToFile: TEST_FILE_PATH_FOR_UPLOAD },
     }).then(async res => {
-      const bodyResponse: UploadFileResponse = res.body;
+      const bodyResponse: UploadFileSuccessResponse = res.body;
       // в ответе придет ссылка на файл
       expect(bodyResponse.url).not.toBe(undefined);
 
       // в БД у пользователя будет аватарка с url, который пришел в ответе
       const userInDB = await User.find({ email: REGISTER_SUCCESS_INPUT_DATA.email });
+      console.log('userInDB[0] = ', userInDB[0]);
+      console.log('bodyResponse.url = ', bodyResponse.url);
       expect(userInDB[0].profilePhoto).toBe(bodyResponse.url);
 
       // при запросе файла он придет
