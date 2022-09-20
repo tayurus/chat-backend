@@ -1,7 +1,7 @@
 import { TypedRequestBody, TypedResponse } from 'src/types/express';
 import { ERROR_MESSAGES } from 'src/utils/errorMessages';
 import * as fs from 'fs';
-import { getFileExtension } from 'src/utils/file';
+import { clearResultPathFromRootDir, getFileExtension } from 'src/utils/file';
 import { UploadFileResponse, UploadFileSuccessResponse } from 'src/types/backendResponses';
 import { UploadFileQueryParams } from 'src/types/backendParams';
 import { User } from 'src/model/user';
@@ -21,18 +21,18 @@ export const uploadFile = async (req: TypedRequestBody<{}, UploadFileQueryParams
       user: { user_id },
     } = req;
     const responseBody: UploadFileSuccessResponse = { url: '' };
-    const tempPath = req.file.path;
+    const tempPath = req.file.path.replace(/\\/g, '/');
     const fileExtension = getFileExtension(req.file);
     const resultPath = tempPath + fileExtension;
 
     fs.rename(tempPath, resultPath, async err => {
       if (err) return handleError(err, res);
       try {
-        await updateUserProfilePhoto({ userId: user_id, profilePhotoUrl: resultPath });
+        await updateUserProfilePhoto({ userId: user_id, profilePhotoUrl: clearResultPathFromRootDir(resultPath) });
       } catch (e) {
         res.status(400).send(ERROR_MESSAGES.UPDATE_USER_PROFILE_FAILED);
       }
-      responseBody.url = resultPath;
+      responseBody.url = clearResultPathFromRootDir(resultPath);
       res.status(200).send(responseBody);
     });
   } else {

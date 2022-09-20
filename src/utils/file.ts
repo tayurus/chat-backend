@@ -6,3 +6,8 @@ export function getFileExtension(file: Express.Multer.File) {
   }
   return '';
 }
+
+export function clearResultPathFromRootDir(resultPath: string) {
+  // @ts-ignore
+  return resultPath.replace(process.env.ROOT_DIR, '');
+}

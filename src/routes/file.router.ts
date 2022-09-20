@@ -22,7 +22,7 @@ const FILE_RESTRICTIONS_BY_TYPE: Record<FILE_UPLOAD, FILE_RESTRICTIONS> = {
 };
 
 const upload = multer({
-  dest: `./src${FILE_ROUTES.UPLOAD_STORAGE}`,
+  dest: `./${process.env.ROOT_DIR}${FILE_ROUTES.UPLOAD_STORAGE}`,
   fileFilter(req: TypedRequestBody<{}, UploadFileQueryParams>, file: Express.Multer.File, callback: multer.FileFilterCallback) {
     const fileRestrictions = FILE_RESTRICTIONS_BY_TYPE[req.query.type];
     if (fileRestrictions.mimetype.includes(file.mimetype)) {
@@ -56,6 +56,6 @@ fileRouter.post(
   // @ts-ignore
   uploadFile,
 ); // @ts-ignore
-fileRouter.get(FILE_ROUTES.GET, getFile);
+fileRouter.get(`${FILE_ROUTES.UPLOAD_STORAGE}${FILE_ROUTES.GET}`, getFile);
 
 export { fileRouter };

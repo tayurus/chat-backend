@@ -17,6 +17,9 @@ import request from 'supertest';
 import { app } from 'src/app';
 import { ERROR_MESSAGES } from 'src/utils/errorMessages';
 import { FILE_UPLOAD } from 'src/types/backendAndFrontendCommonTypes/constants';
+import { BASE_ROUTES } from 'src/types/backendAndFrontendCommonTypes/routes';
+import { getTokenForCookieForTest } from 'src/tests/helpersForTests/getTokenForCookieForTest';
+import { clearResultPathFromRootDir } from 'src/utils/file';
 
 let registeredUsers: Record<string, RegisteredUserForTest> = {};
 
@@ -46,20 +49,19 @@ describe('Загрузка файла', () => {
 
       // в БД у пользователя будет аватарка с url, который пришел в ответе
       const userInDB = await User.find({ email: REGISTER_SUCCESS_INPUT_DATA.email });
-      console.log('userInDB[0] = ', userInDB[0]);
-      console.log('bodyResponse.url = ', bodyResponse.url);
       expect(userInDB[0].profilePhoto).toBe(bodyResponse.url);
 
       // при запросе файла он придет
       request(app)
-        .get(bodyResponse.url)
+        .get(`${BASE_ROUTES.FILE}${clearResultPathFromRootDir(bodyResponse.url)}`)
+        .set('Cookie', getTokenForCookieForTest({ registeredUsers, email: REGISTER_SUCCESS_INPUT_DATA.email }))
         .send()
         .expect(200)
         .end((err, res) => {
           if (err) {
             console.log('get uploaded file error = ', err);
           }
-          console.log('res = ', res);
+          expect(res.headers['content-type']).toEqual('image/png');
           done();
         });
     });
