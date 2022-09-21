@@ -15,5 +15,5 @@ export const LOGIN_SUCCESS_INPUT_DATA: LoginUserBodyParams = {
 };
 
 export const TEST_FILE_PATH_FOR_UPLOAD = path.join('./src/tests/assets/imageForUpload.png');
-export const TEST_TOO_BIG_FILE_PATH_FOR_UPLOAD = path.join('./src/tests/assets/tooBigImage.png');
+export const TEST_TOO_BIG_FILE_PATH_FOR_UPLOAD = path.join('./src/tests/assets/tooBigImage.jpg');
 export const TEST_INVALID_FILE_PATH_FOR_UPLOAD = path.join('./src/tests/assets/invalidFileTypeForUpload.csv');

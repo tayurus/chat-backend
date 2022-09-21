@@ -61,7 +61,6 @@ describe('Изменение пароля пользователя', () => {
       data: UPDATE_PASSWORD_INVALID_OLD_PASSWORD,
       expectedStatus: 400,
     }).then(res => {
-      console.log('res.headers = ', res.headers);
       // проверить, что в куках не пришел токен
       expect(responseHasTokenCookieForTest(res)).toBe(false);
 

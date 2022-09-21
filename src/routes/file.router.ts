@@ -10,7 +10,7 @@ import { ERROR_MESSAGES } from 'src/utils/errorMessages';
 
 const ONE_KILOBYTE = 1024;
 const ONE_MEGABYTE = ONE_KILOBYTE * ONE_KILOBYTE;
-const MAX_FILE_SIZE = 10 * ONE_MEGABYTE;
+const MAX_FILE_SIZE = ONE_MEGABYTE;
 
 type FILE_RESTRICTIONS = {
   mimetype: string[];
@@ -31,7 +31,7 @@ const upload = multer({
       callback(new Error(ERROR_MESSAGES.INVALID_FILE_TYPE));
     }
   },
-  // limits: { fileSize: MAX_FILE_SIZE },
+  limits: { fileSize: MAX_FILE_SIZE },
 }).single('file');
 
 const fileRouter = express.Router();
@@ -43,10 +43,13 @@ fileRouter.post(
     // @ts-ignore
     upload(req, res, (err: any) => {
       if (err instanceof multer.MulterError) {
-        // A Multer error occurred when uploading.
-        res.status(400).send(err.toString());
+        if (err.code === 'LIMIT_FILE_SIZE') {
+          res.status(400).send(ERROR_MESSAGES.FILE_IS_TOO_BIG);
+        } else {
+          res.status(400).send(err.message);
+        }
       } else if (err) {
-        res.status(400).send(err.toString());
+        res.status(400).send(err.message);
         // An unknown error occurred when uploading.
       } else {
         next!();
