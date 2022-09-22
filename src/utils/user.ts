@@ -36,6 +36,7 @@ export function extractUserInfoFromDbEntity(userData: Mongoose.Document<unknown,
     first_name: userData.first_name,
     last_name: userData.last_name,
     email: userData.email,
+    profilePhoto: userData.profilePhoto,
     id: userData._id.toString(),
   };
 }
@@ -119,5 +120,8 @@ export async function notifyThatUserTypingToDialogParticipants(params: WsUserTyp
 export function normalizeFoundedUser(
   userFromDb: Mongoose.Document<Mongoose.Types.ObjectId, any, UserType> & UserType & { _id: Mongoose.Types.ObjectId },
 ): FoundedUser {
-  return { id: userFromDb._id.toString(), last_name: userFromDb.last_name, first_name: userFromDb.first_name };
+  const res = { ...userFromDb, id: userFromDb._id.toString() };
+  // @ts-ignore
+  delete res._id;
+  return res;
 }

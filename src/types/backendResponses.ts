@@ -15,6 +15,7 @@ export type UserInfoInDialog = {
   last_name: string;
   first_name: string;
   id: string;
+  profilePhoto: string;
   online?: boolean;
 };
 export type DialogInResponse = {
@@ -30,6 +31,7 @@ export type RegisterUserSuccessResponse = {
   first_name: string;
   last_name: string;
   email: string;
+  profilePhoto: string;
   id: string;
 };
 export type RegisterUserResponse = string | RegisterUserSuccessResponse;
@@ -38,6 +40,7 @@ export type LoginSuccessResponse = {
   first_name: string;
   last_name: string;
   email: string;
+  profilePhoto: string;
   id: string;
 };
 export type LoginUserResponse = string | LoginSuccessResponse;
@@ -49,6 +52,7 @@ export type FoundedUser = {
   first_name: string;
   last_name: string;
   id: string;
+  profilePhoto: string;
 };
 
 export type SearchUsersResponse = string | Array<FoundedUser>;
@@ -67,6 +71,7 @@ export type WhoAmISuccessResponse = {
   first_name: string;
   last_name: string;
   email: string;
+  profilePhoto: string;
   id: string;
 };
 export type WhoAmIResponse = string | WhoAmISuccessResponse;

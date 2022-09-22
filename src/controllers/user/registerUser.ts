@@ -1,7 +1,7 @@
 import { User } from 'src/model/user';
 import { TypedRequestBody, TypedResponse } from 'src/types/express';
 import { RegisterUserBodyParams } from 'src/types/backendParams';
-import { RegisterUserResponse } from 'src/types/backendResponses';
+import { RegisterUserResponse, RegisterUserSuccessResponse } from 'src/types/backendResponses';
 import { hash } from 'bcryptjs';
 import { ERROR_MESSAGES } from 'src/utils/errorMessages';
 import { signUser } from 'src/utils/user';
@@ -43,10 +43,11 @@ export const registerUser = async (req: TypedRequestBody<RegisterUserBodyParams>
 
     res.cookie('token', token, { maxAge: 900000 });
 
-    const userForFrontend = {
+    const userForFrontend: RegisterUserSuccessResponse = {
       first_name: user.first_name,
       last_name: user.last_name,
       email: user.email,
+      profilePhoto: '',
       id: user._id.toString(),
     };
 

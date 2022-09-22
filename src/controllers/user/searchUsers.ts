@@ -15,7 +15,7 @@ export const searchUsers = async (req: TypedRequestBody<{}, SearchUsersQueryPara
     return res.status(400).send(ERROR_MESSAGES.QUERY_STRING_IS_EMTY);
   }
 
-  const userFieldsForReturn: Array<keyof UserType | '_id'> = ['first_name', 'last_name', '_id'];
+  const userFieldsForReturn: Array<keyof UserType | '_id'> = ['first_name', 'last_name', '_id', 'profilePhoto'];
 
   const searchResults: SearchUsersResponse = (
     await searchByFields<UserType>(User, ['first_name', 'last_name'], searchQuery, userFieldsForReturn)

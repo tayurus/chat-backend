@@ -71,7 +71,7 @@ export const sendMessage = async (req: TypedRequestBody<SendMessageBodyParams>, 
         newMessageWsResponse['data']['dialogId'] = dialog._id.toString();
         // в сообщение для веб-сокетов записываем информацию об участниках диалога
         newMessageWsResponse['data']['participants'] = [
-          { id: fromUser.user_id, first_name: fromUser.first_name, last_name: fromUser.last_name },
+          { id: fromUser.user_id, first_name: fromUser.first_name, last_name: fromUser.last_name, profilePhoto: fromUser.profilePhoto },
           extractUserInfoFromDbEntity(toUser),
         ];
 

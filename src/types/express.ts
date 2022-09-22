@@ -5,7 +5,7 @@ export interface TypedRequestBody<BodyParams = {}, QueryParams = {}, UrlParams =
   cookies: Record<string, string>;
   query: QueryParams;
   params: UrlParams;
-  user: { user_id: string; email: string; first_name: string; last_name: string };
+  user: { user_id: string; email: string; first_name: string; last_name: string; profilePhoto: string };
   file?: Express.Multer.File;
 }
 

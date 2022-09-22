@@ -10,8 +10,8 @@ export const whoAmI = async (req: TypedRequestBody, res: TypedResponse<WhoAmIRes
     const { user_id } = user;
     const userInfo = await User.findById(user_id);
     if (userInfo) {
-      const { first_name, last_name, _id, email } = userInfo;
-      return res.status(200).send({ first_name, id: _id.toString(), last_name, email });
+      const { first_name, last_name, _id, email, profilePhoto } = userInfo;
+      return res.status(200).send({ first_name, id: _id.toString(), last_name, email, profilePhoto });
     } else {
       res.status(400).send(ERROR_MESSAGES.USER_NOT_FOUND);
     }

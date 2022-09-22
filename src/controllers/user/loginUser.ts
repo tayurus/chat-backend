@@ -26,7 +26,13 @@ export const loginUser = async (req: TypedRequestBody<LoginUserBodyParams>, res:
 
       res.cookie('token', token, { maxAge: 900000 });
 
-      return res.status(200).json({ id: user._id.toString(), first_name: user.first_name, last_name: user.last_name, email: user.email });
+      return res.status(200).json({
+        id: user._id.toString(),
+        first_name: user.first_name,
+        last_name: user.last_name,
+        email: user.email,
+        profilePhoto: user.profilePhoto,
+      });
     } else {
       return res.status(400).send(ERROR_MESSAGES.USER_NOT_FOUND);
     }
