@@ -20,4 +20,5 @@ export enum ERROR_MESSAGES {
   FILE_IS_TOO_BIG = 'file is too big (max 1mb)',
   INVALID_FILE_TYPE = 'invalid file type',
   UPDATE_USER_PROFILE_FAILED = 'update user profile failed',
+  USER_HAS_NOT_PHOTO_PROFILE = 'user has not photo profile',
 }
