@@ -11,6 +11,7 @@ export enum USER_ROUTES {
   SEARCH_USERS = '/search',
   WHO_AM_I = '/whoAmI',
   UPDATE_PASSWORD = '/updatePassword',
+  REMOVE_PROFILE_PHOTO = '/removeProfilePhoto',
 }
 
 export enum MESSAGE_ROUTES {

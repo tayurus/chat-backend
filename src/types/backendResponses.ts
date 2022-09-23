@@ -97,3 +97,6 @@ export type UpdateUserPasswordResponse = {};
 
 export type UploadFileSuccessResponse = { url: string };
 export type UploadFileResponse = string | UploadFileSuccessResponse;
+
+export type RemoveProfilePhotoResponse = string | RemoveProfilePhotoSuccess;
+export type RemoveProfilePhotoSuccess = {};

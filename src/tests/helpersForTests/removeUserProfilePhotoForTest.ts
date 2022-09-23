@@ -10,9 +10,9 @@ export async function removeUserProfileForTest(params: { expectedStatus?: number
   const { registeredUsers, expectedStatus = 200, requesterEmail } = params;
 
   return request(app)
-    .post(`${BASE_ROUTES.USER}${USER_ROUTES.UPDATE_PASSWORD}`)
+    .delete(`${BASE_ROUTES.USER}${USER_ROUTES.REMOVE_PROFILE_PHOTO}`)
     .set('Cookie', getTokenForCookieForTest({ registeredUsers, email: requesterEmail }))
-    .send()
+    .send({})
     .expect(expectedStatus)
     .then(res => {
       return res;

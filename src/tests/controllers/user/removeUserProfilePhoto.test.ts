@@ -44,7 +44,7 @@ describe('Удаление аватарки пользователя', () => {
     removeUserProfileForTest({ registeredUsers, requesterEmail: REGISTER_SUCCESS_INPUT_DATA2.email, expectedStatus: 400 }).then(async res => {
       expect(res.text).toBe(ERROR_MESSAGES.USER_HAS_NOT_PHOTO_PROFILE);
       const userFromDb = await User.find({ email: REGISTER_SUCCESS_INPUT_DATA2.email });
-      expect(userFromDb[0].profilePhoto).toBe(null);
+      expect(userFromDb[0].profilePhoto).toBe(undefined);
 
       done();
     });
