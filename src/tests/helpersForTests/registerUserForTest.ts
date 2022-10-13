@@ -13,7 +13,7 @@ export async function registerUserForTest(users = [REGISTER_SUCCESS_INPUT_DATA])
       .send(users[i])
       .then(function (res) {
         registeredUsers[users[i].email] = Object.assign({}, res.body);
-        registeredUsers[users[i].email]['token'] = setCookierParser.parse(res.headers['set-cookie'][0])[0].value;
+        registeredUsers[users[i].email]['token'] = setCookierParser.parse(res.headers['set-cookie']?.[0])?.[0].value;
       })
       .catch(err => {
         console.error('err while register = ', err);
