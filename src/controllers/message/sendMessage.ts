@@ -88,7 +88,7 @@ export const sendMessage = async (req: TypedRequestBody<SendMessageBodyParams>, 
       }
 
       /*!!!! берем всех participants, кроме fromUser.user_id, и отправялем им по сокетам сообщение и айди-диалога  !!!!*/
-      const allDialogParticipantsExceptCurrentUser = dialog.participants.filter(it => it !== fromUser.user_id);
+      const allDialogParticipantsExceptCurrentUser = dialog.participants.filter(it => it.toString() !== fromUser.user_id);
       newMessageWsResponse['data']['message'] = normalizeMessage(createdMessage);
 
       allDialogParticipantsExceptCurrentUser.forEach(it => {
