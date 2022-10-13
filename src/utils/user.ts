@@ -71,8 +71,15 @@ export function startPingPongPoolingForUserOnlineStatus(params: { ws: WebSocket;
   function updateIsAliveUserStatusWithPingPongStrategy() {
     ws.ping(PING_PONG_DATA);
     return setTimeout(() => {
-      WebSocketModule.removeClient(userId);
-      notifyThatUserUpdatedToAllHisDialogsParticipants({ userId, changes: { online: false } });
+      /*
+      удаляем клиента только в том случае, если на ping не пришел ответ
+      и пользователь не переподключился по новой
+      (объект ws до пинга (из params) должен совпадать с текущим ws в clients )
+      */
+      if (ws === WebSocketModule.clients[userId]) {
+        WebSocketModule.removeClient(userId);
+        notifyThatUserUpdatedToAllHisDialogsParticipants({ userId, changes: { online: false } });
+      }
     }, PING_PONG_WAIT_TIMEOUT);
   }
 
