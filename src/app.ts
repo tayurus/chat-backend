@@ -2,7 +2,7 @@ import { BASE_ROUTES } from 'src/types/backendAndFrontendCommonTypes/routes';
 
 require('dotenv').config();
 import { connectToDB } from 'src/config/database';
-import express, { NextFunction, RequestHandler } from 'express';
+import express, { NextFunction } from 'express';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import { verifyToken } from 'src/middleware/auth';
@@ -17,7 +17,6 @@ import {
 } from 'src/utils/user';
 import { WebSocketMessage, WebSocketsEvents } from 'src/types/backendResponses';
 import { WsUserTypingParams } from 'src/types/backendParams';
-import path from 'path';
 import { fileRouter } from 'src/routes/file.router';
 
 connectToDB();

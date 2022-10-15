@@ -52,7 +52,7 @@ fileRouter.post(
         res.status(400).send(err.message);
         // An unknown error occurred when uploading.
       } else {
-        next!();
+        next && next();
       }
     });
   },

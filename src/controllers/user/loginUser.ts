@@ -19,7 +19,7 @@ export const loginUser = async (req: TypedRequestBody<LoginUserBodyParams>, res:
       return res.status(404).send(ERROR_MESSAGES.USER_NOT_FOUND);
     }
 
-    if (user && (await compare(password, user.password!))) {
+    if (user && (await compare(password, user.password))) {
       const token = signUser({ id: user._id.toString(), email, last_name: user.last_name, first_name: user.first_name });
 
       // user.token = token;
